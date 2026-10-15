@@ -142,40 +142,58 @@ const wordCount = (s: string) => s.trim().split(/\s+/).length;
       </div>
     </section>
 
-    <section id="contact" class="contact">
-      <div class="wrap">
-        <div class="sec-head grid">
-          <p class="c-3"><span class="num">(06)</span> Contact</p>
-          <h2 class="c-9 contact-title" data-lines>
-            Got a page that should rank? <em>Let's write it.</em>
-          </h2>
+  </main>
+
+    <footer id="contact" class="site-foot">
+      <div class="sf-panel">
+        <div class="sf-top">
+          <div class="sf-brand">
+            <a class="sf-logo" href="#top">jyoti chauhan</a>
+            <div class="sf-legal">
+              <p>© 2026 {person.name}</p>
+              <p>{person.city} — <span data-clock>IST</span></p>
+            </div>
+          </div>
+          <nav class="sf-col" aria-label="Site">
+            <p class="sf-label">Site</p>
+            <a href="#work">Selected work</a>
+            <a href="#results">Results</a>
+            <a href="#about">About</a>
+            <a href="#top">Back to top</a>
+          </nav>
+          <nav class="sf-col" aria-label="Elsewhere">
+            <p class="sf-label">Elsewhere</p>
+            <a href={`mailto:${person.email}`}>Email</a>
+            <a href="/ai/">Text version</a>
+            <a href="/llms.txt">llms.txt</a>
+            {person.resume && <a href={person.resume} download>Resume</a>}
+          </nav>
+          <div class="sf-hire">
+            <p class="sf-label">Work with me</p>
+            <p class="sf-pitch">Got a page that should rank? Let's write it together.</p>
+            <a class="sf-field" href={`mailto:${person.email}`} data-cursor>
+              <span>{person.email}</span><span class="sf-go" aria-hidden="true">&rarr;</span>
+            </a>
+            <p class="sf-note">
+              Blogs, website copy, landing pages or campaigns: write to me with what you need.{" "}
+              <button class="sf-copy" type="button" data-copy={person.email}>Copy address</button>
+            </p>
+          </div>
         </div>
-        <div class="grid">
-          <div class="at-4">
-            <a class="email" href={`mailto:${person.email}`} data-cursor>{person.email}</a>
-            <div class="contact-actions">
-              <button class="btn" type="button" data-copy={person.email}>Copy email</button>
-              {person.resume && <a class="btn" href={person.resume} download>Download resume</a>}
+        <div class="sf-sky">
+          <canvas class="space" aria-hidden="true"></canvas>
+          <p class="sf-hint" aria-hidden="true">psst, <span class="hint-fine">click</span><span class="hint-touch">tap</span> the astronaut</p>
+          <div class="game" data-game hidden tabindex="0" role="application" aria-label="A small text platform game. Arrow keys to move, Space to jump, Escape to go back.">
+            <pre class="game-screen" aria-hidden="true"></pre>
+            <div class="game-pad" aria-hidden="true">
+              <button type="button" data-key="left" tabindex="-1">&larr;</button>
+              <button type="button" data-key="right" tabindex="-1">&rarr;</button>
+              <button type="button" data-key="jump" tabindex="-1">Jump</button>
             </div>
           </div>
         </div>
-        <div class="game" data-game tabindex="0" role="application" aria-label="A small text platform game. Press Enter to play, arrow keys to move, Space to jump, Escape to quit.">
-          <pre class="game-screen" aria-hidden="true"></pre>
-          <div class="game-pad" aria-hidden="true">
-            <button type="button" data-key="left" tabindex="-1">&larr;</button>
-            <button type="button" data-key="right" tabindex="-1">&rarr;</button>
-            <button type="button" data-key="jump" tabindex="-1">Jump</button>
-          </div>
-        </div>
-        <footer class="foot grid">
-          <p class="c-3">© 2026 {person.name}</p>
-          <p class="c-3">{person.city} — <span data-clock>IST</span></p>
-          <p class="c-3">Set in Inter Tight &amp; Instrument Serif</p>
-          <p class="c-3 right"><a href="#top">Back to top ↑</a></p>
-        </footer>
       </div>
-    </section>
-  </main>
+    </footer>
 
   <script>
     import "../scripts/main";

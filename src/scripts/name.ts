@@ -47,4 +47,14 @@ export function initName() {
     },
   });
   ScrollTrigger.addEventListener("refreshInit", measure);
+
+  // Hide the section links once the footer reaches the top, so they don't
+  // sit on top of its column headings. The initials stay.
+  const foot = document.querySelector(".site-foot");
+  if (foot)
+    ScrollTrigger.create({
+      trigger: foot,
+      start: "top 80px",
+      onToggle: (self) => bar.classList.toggle("over-foot", self.isActive),
+    });
 }

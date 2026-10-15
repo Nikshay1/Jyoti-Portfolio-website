@@ -164,10 +164,12 @@ const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replac
 
 // ---------------------------------------------------------------------------
 
-export function initGame() {
+// `onQuit` runs when the player presses Escape, so the footer can put the
+// night sky back.
+export function initGame({ onQuit }: { onQuit?: () => void } = {}) {
   const root = document.querySelector<HTMLElement>("[data-game]");
   const screen = root?.querySelector<HTMLElement>(".game-screen");
-  if (!root || !screen) return;
+  if (!root || !screen) return { start() {} };
 
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const touch = matchMedia("(hover: none), (pointer: coarse)").matches;
@@ -379,6 +381,7 @@ export function initGame() {
     screen!.append(probe);
     const cw = probe.getBoundingClientRect().width / 20;
     probe.remove();
+    if (!cw || !screen!.clientWidth) return; // hidden until the astronaut is clicked
     cols = Math.max(24, Math.floor(screen!.clientWidth / cw));
     if (cols % 2) cols--;
   }
@@ -530,6 +533,7 @@ export function initGame() {
     keys.left = keys.right = keys.jump = false;
     wake();
     draw();
+    onQuit?.();
   }
 
   // --- input ---------------------------------------------------------------
@@ -614,6 +618,8 @@ export function initGame() {
         state: () => ({ mode, x: player.x, y: player.y, score }),
       },
     });
+
+  return { start };
 }
 
 function readBest(): number | null {

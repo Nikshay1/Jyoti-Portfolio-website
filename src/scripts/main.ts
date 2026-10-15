@@ -4,6 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { initGame } from "./game";
 import { runIntro } from "./intro";
+import { initSpace } from "./space";
 import { initName } from "./name";
 import { initRewrite } from "./rewrite";
 
@@ -29,7 +30,7 @@ initClock();
 initCopy();
 initAnchors();
 initPreview();
-initGame();
+initFooterSky();
 if (!reduced) {
   initReveals();
   initCounters();
@@ -109,6 +110,26 @@ function initCounters() {
       scrollTrigger: { trigger: el, start: "top 90%" },
       onUpdate: () => (el.textContent = String(Math.round(n.v))),
     });
+  });
+}
+
+// The footer sky; clicking the astronaut swaps it for the text platformer.
+function initFooterSky() {
+  const sky = document.querySelector<HTMLElement>(".sf-sky");
+  const gameEl = document.querySelector<HTMLElement>("[data-game]");
+  if (!sky || !gameEl) return;
+  const space = initSpace(() => {
+    space.pause();
+    sky.classList.add("is-game");
+    gameEl.hidden = false;
+    game.start();
+  });
+  const game = initGame({
+    onQuit: () => {
+      gameEl.hidden = true;
+      sky.classList.remove("is-game");
+      space.resume();
+    },
   });
 }
 
