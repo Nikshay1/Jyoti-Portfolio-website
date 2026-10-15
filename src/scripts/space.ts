@@ -1,7 +1,7 @@
 // The night sky at the bottom of the footer: a dot-matrix starfield that
 // twinkles in small clusters, plus a dotted crescent moon and ringed planet.
 
-const DOT = 5; // grid spacing for every dotted shape, in CSS pixels
+const DOT = 7; // grid spacing for every dotted shape, in CSS pixels
 
 type Cluster = { x: number; y: number; dots: [number, number][]; t: number; life: number };
 
