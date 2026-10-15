@@ -1,7 +1,16 @@
 // The night sky at the bottom of the footer: a dot-matrix starfield that
-// twinkles in small clusters, plus a dotted crescent moon and ringed planet.
+// twinkles in small clusters, a dotted crescent moon and ringed planet, and
+// a few small, dim planets far behind them.
 
 const DOT = 7; // grid spacing for every dotted shape, in CSS pixels
+
+// Distant planets: position as a fraction of the sky, radius in grid steps,
+// and peak brightness. Kept small and faint so they read as far away.
+const FAR = [
+  { x: 0.36, y: 0.24, r: 5, ring: false, a: 0.4 },
+  { x: 0.56, y: 0.74, r: 5.5, ring: true, a: 0.34 },
+  { x: 0.7, y: 0.26, r: 4, ring: false, a: 0.3 },
+];
 
 type Cluster = { x: number; y: number; dots: [number, number][]; t: number; life: number };
 
@@ -17,6 +26,7 @@ export function initSpace() {
   let clusters: Cluster[] = [];
   let moon: [number, number, number][] = [];
   let planet: [number, number, number][] = [];
+  let far: [number, number, number][] = [];
   let time = 0;
 
   const rand = (a: number, b: number) => a + Math.random() * (b - a);
@@ -61,6 +71,28 @@ export function initSpace() {
           planet.push([gx, gy, 0.35]);
         }
       }
+
+    far = [];
+    for (const f of FAR) {
+      const fr = f.r * DOT;
+      const fx = Math.round((w * f.x) / DOT) * DOT;
+      const fy = Math.round((h * f.y) / DOT) * DOT;
+      const reach = f.ring ? fr * 2 : fr;
+      for (let gx = fx - Math.ceil(reach / DOT) * DOT; gx <= fx + reach; gx += DOT)
+        for (let gy = fy - Math.ceil(fr / DOT) * DOT; gy <= fy + fr; gy += DOT) {
+          const dx = gx - fx;
+          const dy = gy - fy;
+          if (Math.hypot(dx, dy) < fr) {
+            const light = Math.max(0, (dx * 0.6 - dy * 0.8) / fr);
+            if (light > 0.15 || (gx / DOT + gy / DOT) % 2 === 0) far.push([gx, gy, f.a * (0.3 + light * 0.7)]);
+          } else if (f.ring) {
+            const rx = dx * Math.cos(0.3) + dy * Math.sin(0.3);
+            const ry = -dx * Math.sin(0.3) + dy * Math.cos(0.3);
+            const e = Math.hypot(rx / (fr * 1.9), ry / (fr * 0.5));
+            if (e > 0.72 && e < 1.05) far.push([gx, gy, f.a * 0.6]);
+          }
+        }
+    }
   }
 
   // --- twinkling clusters ----------------------------------------------------
@@ -116,6 +148,8 @@ export function initSpace() {
   function draw() {
     ctx!.clearRect(0, 0, w, h);
     ctx!.fillStyle = "#f7f7f5";
+
+    for (const [x, y, a] of far) dot(x, y, 1.2, a);
 
     for (const c of clusters) {
       const a = Math.sin(Math.PI * Math.min(1, c.t / c.life)) * 0.55;
