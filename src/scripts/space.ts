@@ -1,8 +1,9 @@
-// The night sky at the bottom of the footer: a dot-matrix starfield that
-// twinkles in small clusters, a dotted crescent moon and ringed planet, and
-// a few small, dim planets far behind them.
+// The night sky at the bottom of the footer, drawn like halftone print: a
+// grid of solid grey dots in four fixed sizes, where a bigger dot reads as
+// brighter. A crescent moon and ringed planet, a few small planets far
+// behind them, sparse single stars, and faint patches that come and go.
 
-const DOT = 7; // grid spacing for every dotted shape, in CSS pixels
+const DOT = 9; // grid spacing for every dotted shape, in CSS pixels
 
 // Distant planets: position as a fraction of the sky, radius in grid steps,
 // and peak brightness. Kept small and faint so they read as far away.
@@ -12,7 +13,18 @@ const FAR = [
   { x: 0.7, y: 0.26, r: 4, ring: false, a: 0.3 },
 ];
 
+// Dot radius for each brightness step, as a share of the grid gap. There is
+// no transparency anywhere: the faintest step is a speck in a darker grey,
+// the other three are the same grey at growing sizes.
+const SIZES = [0.07, 0.09, 0.17, 0.31];
+const SPECK = "#3a3936";
+const TONE = "#6b6a65";
+
+// Brightness (0 to 1) to a size step, or -1 for no dot.
+const step = (b: number) => (b < 0.03 ? -1 : b < 0.12 ? 0 : b < 0.3 ? 1 : b < 0.55 ? 2 : 3);
+
 type Cluster = { x: number; y: number; dots: [number, number][]; t: number; life: number };
+type Star = { x: number; y: number; b: number; rate: number; phase: number };
 
 export function initSpace() {
   const canvas = document.querySelector<HTMLCanvasElement>(".space");
@@ -27,6 +39,7 @@ export function initSpace() {
   let moon: [number, number, number][] = [];
   let planet: [number, number, number][] = [];
   let far: [number, number, number][] = [];
+  let stars: Star[] = [];
   let time = 0;
   // Narrow screens zoom the whole sky out: a finer grid, smaller dots and
   // smaller shapes, so a phone shows the same scene instead of a close-up.
@@ -133,7 +146,20 @@ export function initSpace() {
     canvas!.height = Math.round(h * dpr);
     ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
     buildShapes();
-    const count = Math.round((w * h) / (9000 * zoom));
+
+    // Sparse single stars, most of them specks and a few full dots. About
+    // one in four slowly brightens and dims by a step.
+    stars = [];
+    for (let gx = 0; gx <= w; gx += g)
+      for (let gy = 0; gy <= h; gy += g) {
+        if (Math.random() > 0.014) continue;
+        const roll = Math.random();
+        const b = roll < 0.45 ? 0.08 : roll < 0.85 ? 0.2 : roll < 0.97 ? 0.4 : 0.7;
+        const twinkle = Math.random() < 0.25;
+        stars.push({ x: gx, y: gy, b, rate: twinkle ? rand(0.4, 1.1) : 0, phase: rand(0, Math.PI * 2) });
+      }
+
+    const count = Math.round((w * h) / (22000 * zoom));
     clusters = Array.from({ length: count }, () => {
       const c = spawnCluster();
       c.t = rand(0, c.life);
@@ -144,40 +170,46 @@ export function initSpace() {
 
   // --- drawing ---------------------------------------------------------------
 
-  // Brightness is carried by a dot's size, not its opacity: every dot is
-  // drawn at the same solid tone, and its area grows with brightness. Small
-  // dots read as dim without the muddy grey that transparency gives.
-  const FULL = 0.85; // brightness that gets the largest dot
+  // Dots are collected into one path per tone and filled once per frame.
+  const paths = [new Path2D(), new Path2D()];
   const dot = (x: number, y: number, b: number) => {
-    if (b < 0.02) return;
-    // A small floor keeps the faintest dots as pinpoints instead of gaps.
-    const r = 0.32 * g * (0.14 + 0.86 * Math.min(1, b / FULL));
-    ctx!.moveTo(x + r, y);
-    ctx!.arc(x, y, r, 0, Math.PI * 2);
+    const k = step(b);
+    if (k < 0) return;
+    const r = SIZES[k] * g;
+    const path = paths[k === 0 ? 0 : 1];
+    path.moveTo(x + r, y);
+    path.arc(x, y, r, 0, Math.PI * 2);
   };
 
   function draw() {
     ctx!.clearRect(0, 0, w, h);
-    ctx!.fillStyle = "#f7f7f5";
-    ctx!.globalAlpha = 0.9;
-    ctx!.beginPath();
+    paths[0] = new Path2D();
+    paths[1] = new Path2D();
 
     for (const [x, y, b] of far) dot(x, y, b);
 
+    for (const s of stars) {
+      // A twinkling star spends part of its cycle one step brighter.
+      const up = s.rate && Math.sin(time * s.rate + s.phase) > 0.55;
+      dot(s.x, s.y, up ? s.b * 2 : s.b);
+    }
+
+    // Faint patches: they rise to the second step at most, then fade out.
     for (const c of clusters) {
-      const b = Math.sin(Math.PI * Math.min(1, c.t / c.life)) * 0.55;
+      const b = Math.sin(Math.PI * Math.min(1, c.t / c.life)) * 0.25;
       for (const [dx, dy] of c.dots) dot(c.x + dx * g, c.y + dy * g, b);
     }
 
-    const shimmer = (x: number, y: number) => 0.85 + 0.15 * Math.sin(time * 1.3 + x * 0.05 + y * 0.07);
-    for (const [x, y, b] of moon) dot(x, y, b * shimmer(x, y));
-    for (const [x, y, b] of planet) dot(x, y, b * shimmer(x, y));
+    for (const [x, y, b] of moon) dot(x, y, b);
+    for (const [x, y, b] of planet) dot(x, y, b);
 
-    ctx!.fill();
-    ctx!.globalAlpha = 1;
+    ctx!.fillStyle = SPECK;
+    ctx!.fill(paths[0]);
+    ctx!.fillStyle = TONE;
+    ctx!.fill(paths[1]);
   }
 
-  function step(dt: number) {
+  function advance(dt: number) {
     time += dt;
     for (const c of clusters) c.t += dt;
     clusters = clusters.map((c) => (c.t >= c.life ? spawnCluster() : c));
@@ -192,7 +224,7 @@ export function initSpace() {
   function frame(now: number) {
     const dt = Math.min(0.05, (now - last) / 1000 || 0);
     last = now;
-    step(dt);
+    advance(dt);
     draw();
     raf = visible ? requestAnimationFrame(frame) : 0;
   }
