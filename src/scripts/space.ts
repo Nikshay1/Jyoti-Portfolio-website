@@ -144,27 +144,36 @@ export function initSpace() {
 
   // --- drawing ---------------------------------------------------------------
 
-  const dot = (x: number, y: number, r: number, a: number) => {
-    ctx!.globalAlpha = a;
-    ctx!.beginPath();
+  // Brightness is carried by a dot's size, not its opacity: every dot is
+  // drawn at the same solid tone, and its area grows with brightness. Small
+  // dots read as dim without the muddy grey that transparency gives.
+  const FULL = 0.85; // brightness that gets the largest dot
+  const dot = (x: number, y: number, b: number) => {
+    if (b < 0.02) return;
+    // A small floor keeps the faintest dots as pinpoints instead of gaps.
+    const r = 0.32 * g * (0.14 + 0.86 * Math.min(1, b / FULL));
+    ctx!.moveTo(x + r, y);
     ctx!.arc(x, y, r, 0, Math.PI * 2);
-    ctx!.fill();
   };
 
   function draw() {
     ctx!.clearRect(0, 0, w, h);
     ctx!.fillStyle = "#f7f7f5";
+    ctx!.globalAlpha = 0.9;
+    ctx!.beginPath();
 
-    for (const [x, y, a] of far) dot(x, y, 1.2 * zoom, a);
+    for (const [x, y, b] of far) dot(x, y, b);
 
     for (const c of clusters) {
-      const a = Math.sin(Math.PI * Math.min(1, c.t / c.life)) * 0.55;
-      for (const [dx, dy] of c.dots) dot(c.x + dx * g, c.y + dy * g, 1.4 * zoom, a);
+      const b = Math.sin(Math.PI * Math.min(1, c.t / c.life)) * 0.55;
+      for (const [dx, dy] of c.dots) dot(c.x + dx * g, c.y + dy * g, b);
     }
 
     const shimmer = (x: number, y: number) => 0.85 + 0.15 * Math.sin(time * 1.3 + x * 0.05 + y * 0.07);
-    for (const [x, y, a] of moon) dot(x, y, 1.6 * zoom, a * shimmer(x, y));
-    for (const [x, y, a] of planet) dot(x, y, 1.6 * zoom, a * shimmer(x, y));
+    for (const [x, y, b] of moon) dot(x, y, b * shimmer(x, y));
+    for (const [x, y, b] of planet) dot(x, y, b * shimmer(x, y));
+
+    ctx!.fill();
     ctx!.globalAlpha = 1;
   }
 
