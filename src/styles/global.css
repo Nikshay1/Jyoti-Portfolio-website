@@ -574,7 +574,10 @@ html:not(.js) .rw-static,
 .photo {
   position: sticky;
   top: calc(var(--g) + 72px);
-  aspect-ratio: 4 / 5;
+  /* Same shape as the photo itself, so nothing is cropped. Narrow enough
+     that the whole photo fits on short laptop screens too. */
+  aspect-ratio: 941 / 1466;
+  width: min(100%, calc((100svh - var(--g) - 104px) * 941 / 1466));
   overflow: hidden;
   background: #ebebe9;
 }
@@ -586,7 +589,7 @@ html:not(.js) .rw-static,
   object-fit: cover;
   object-position: 50% 35%;
   filter: grayscale(1) contrast(1.04);
-  transform: scale(var(--zoom, 1.12));
+  transform: scale(var(--zoom, 1));
   transition: filter 0.9s var(--ease);
 }
 

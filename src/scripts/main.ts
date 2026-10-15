@@ -83,14 +83,15 @@ function initReveals() {
   });
 }
 
-// The portrait settles from a slight zoom as it scrolls through the view.
+// The portrait starts zoomed in and settles to the full, uncropped photo
+// by the time it is well into view.
 function initPhoto() {
   const img = document.querySelector<HTMLElement>(".photo img");
   if (!img) return;
-  gsap.fromTo(img, { "--zoom": 1.18 }, {
+  gsap.fromTo(img, { "--zoom": 1.225 }, {
     "--zoom": 1,
     ease: "none",
-    scrollTrigger: { trigger: ".about", start: "top bottom", end: "bottom top", scrub: true },
+    scrollTrigger: { trigger: ".photo", start: "top bottom", end: "top 25%", scrub: true },
   });
 }
 
