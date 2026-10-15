@@ -650,26 +650,30 @@ html:not(.js) .rw-static,
 /* ---------- contact ---------- */
 
 .contact {
-  padding-top: clamp(96px, 12vw, 180px);
+  padding-top: clamp(64px, 8vw, 112px);
   background: var(--ink);
   color: var(--paper);
   --line: rgba(247, 247, 245, 0.16);
   --mute: rgba(247, 247, 245, 0.5);
 }
 
+.contact .sec-head {
+  margin-bottom: clamp(28px, 3.5vw, 48px);
+}
+
 .contact-title {
-  font-size: clamp(38px, 6.4vw, 108px);
+  font-size: clamp(26px, 3.2vw, 48px);
   font-weight: 500;
-  line-height: 0.95;
-  letter-spacing: -0.055em;
+  line-height: 1;
+  letter-spacing: -0.045em;
 }
 
 .email {
   position: relative;
   display: inline-block;
-  font-size: clamp(22px, 3.4vw, 54px);
+  font-size: clamp(17px, 1.6vw, 22px);
   font-weight: 500;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
   word-break: break-all;
 }
 
@@ -678,8 +682,8 @@ html:not(.js) .rw-static,
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -4px;
-  height: 2px;
+  bottom: -3px;
+  height: 1px;
   background: var(--accent);
   transform: scaleX(0.12);
   transform-origin: left;
@@ -693,16 +697,16 @@ html:not(.js) .rw-static,
 .contact-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 32px;
+  gap: 8px;
+  margin-top: 20px;
 }
 
 .btn {
-  padding: 10px 18px;
+  padding: 6px 13px;
   border: 1px solid var(--line);
   border-radius: 999px;
   background: none;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: background 0.4s var(--ease), color 0.4s var(--ease);
@@ -714,10 +718,10 @@ html:not(.js) .rw-static,
 }
 
 .foot {
-  margin-top: clamp(96px, 14vw, 200px);
-  padding: 18px 0 var(--g);
+  margin-top: clamp(64px, 8vw, 120px);
+  padding: 14px 0 var(--g);
   border-top: 1px solid var(--line);
-  font-size: 13px;
+  font-size: 12px;
   color: var(--mute);
 }
 
