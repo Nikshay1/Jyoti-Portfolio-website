@@ -2,6 +2,7 @@ import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
+import { initGame } from "./game";
 import { runIntro } from "./intro";
 import { initName } from "./name";
 import { initRewrite } from "./rewrite";
@@ -28,6 +29,7 @@ initClock();
 initCopy();
 initAnchors();
 initPreview();
+initGame();
 if (!reduced) {
   initReveals();
   initCounters();

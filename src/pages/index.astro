@@ -156,6 +156,14 @@ const wordCount = (s: string) => s.trim().split(/\s+/).length;
             </div>
           </div>
         </div>
+        <div class="game" data-game tabindex="0" role="application" aria-label="A small text platform game. Press Enter to play, arrow keys to move, Space to jump, Escape to quit.">
+          <pre class="game-screen" aria-hidden="true"></pre>
+          <div class="game-pad" aria-hidden="true">
+            <button type="button" data-key="left" tabindex="-1">&larr;</button>
+            <button type="button" data-key="right" tabindex="-1">&rarr;</button>
+            <button type="button" data-key="jump" tabindex="-1">Jump</button>
+          </div>
+        </div>
         <footer class="foot grid">
           <p class="c-3">© 2026 {person.name}</p>
           <p class="c-3">{person.city} — <span data-clock>IST</span></p>
