@@ -3,39 +3,11 @@
 // a tiny pixel astronaut (round glasses, like Jyoti) who floats towards the
 // cursor. Clicking the astronaut calls `onAstronaut`.
 
-const DOT = 10; // grid spacing for every dotted shape, in CSS pixels
-const PX = 5; // size of one astronaut pixel
+import { ASTRO_H, ASTRO_W, astronaut } from "./astronaut";
 
-// Astronaut sprite. Helmet is drawn separately as a circle around it.
-const FACE = [
-  "..hhhhhh..",
-  ".hhhhhhhh.",
-  "hhffffffhh",
-  "hgggffgggh",
-  "hgeggggegh",
-  "hgggffgggh",
-  "hhffmmffhh",
-  "hh.ffff.hh",
-  "hh......hh",
-];
-const BODY = [
-  "...cccccc...",
-  ".ssssssssss.",
-  "asssssssssssa",
-  ".ssssaassss.",
-  "..sss..sss..",
-  "..ss....ss..",
-];
-const COLORS: Record<string, string> = {
-  h: "#3d2b22",
-  f: "#e3a985",
-  g: "#5b4632",
-  e: "#151515",
-  m: "#c4574a",
-  c: "#cfcfcb",
-  s: "#efefec",
-  a: "#ff4f1a",
-};
+const DOT = 10; // grid spacing for every dotted shape, in CSS pixels
+// Size of one astronaut pixel: bigger on wide screens.
+let PX = 3;
 
 type Cluster = { x: number; y: number; dots: [number, number][]; t: number; life: number };
 type Spark = { x: number; y: number; t: number; life: number; color: string };
@@ -130,6 +102,7 @@ export function initSpace(onAstronaut: () => void) {
     dpr = Math.min(2, devicePixelRatio || 1);
     w = r.width;
     h = r.height;
+    PX = w > 1100 ? 4 : 3;
     canvas!.width = Math.round(w * dpr);
     canvas!.height = Math.round(h * dpr);
     ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -156,47 +129,24 @@ export function initSpace(onAstronaut: () => void) {
     ctx!.fill();
   };
 
+  // Pre-rendered frames: [wave][blink].
+  const frames = [false, true].map((wave) => [false, true].map((blink) => astronaut(wave, blink)));
+  let facing = 1;
+
   function drawAstronaut(x: number, y: number) {
-    const cols = 18;
-    const ox = Math.round(x - (cols * PX) / 2);
-    const oy = Math.round(y - 9 * PX);
-    const cx = ox + 9 * PX;
-    const cy = oy + 6.5 * PX;
-    const r = 7.2 * PX;
-
-    // Helmet glass and rim, in chunky pixels.
-    for (let i = 0; i < cols; i++)
-      for (let j = 0; j < 14; j++) {
-        const d = Math.hypot(ox + (i + 0.5) * PX - cx, oy + (j + 0.5) * PX - cy);
-        if (d < r - PX * 0.6) {
-          ctx!.globalAlpha = 0.16;
-          ctx!.fillStyle = "#9fb4d6";
-          ctx!.fillRect(ox + i * PX, oy + j * PX, PX, PX);
-        } else if (d < r + PX * 0.4) {
-          ctx!.globalAlpha = 0.95;
-          ctx!.fillStyle = "#e9e9e6";
-          ctx!.fillRect(ox + i * PX, oy + j * PX, PX, PX);
-        }
+    const wave = time % 4.5 < 1.6 && Math.floor(time * 3) % 2 === 1;
+    const blink = time % 3.7 > 3.55;
+    const grid = frames[+wave][+blink];
+    const ox = Math.round(x - (ASTRO_W * PX) / 2);
+    const oy = Math.round(y - (ASTRO_H * PX) / 2);
+    ctx!.globalAlpha = 1;
+    for (let j = 0; j < ASTRO_H; j++)
+      for (let i = 0; i < ASTRO_W; i++) {
+        const c = grid[j][facing > 0 ? i : ASTRO_W - 1 - i];
+        if (!c) continue;
+        ctx!.fillStyle = c;
+        ctx!.fillRect(ox + i * PX, oy + j * PX, PX, PX);
       }
-
-    const paint = (rows: string[], col: number, row: number) =>
-      rows.forEach((line, j) =>
-        [...line].forEach((ch, i) => {
-          const c = COLORS[ch];
-          if (!c) return;
-          ctx!.globalAlpha = 1;
-          ctx!.fillStyle = c;
-          ctx!.fillRect(ox + (col + i) * PX, oy + (row + j) * PX, PX, PX);
-        }),
-      );
-    paint(FACE, 4, 2);
-    paint(BODY, 3, 13);
-
-    // A glint on the glass.
-    ctx!.globalAlpha = 0.7;
-    ctx!.fillStyle = "#fff";
-    ctx!.fillRect(ox + 13 * PX, oy + 2 * PX, PX, PX);
-    ctx!.fillRect(ox + 14 * PX, oy + 3 * PX, PX, PX);
   }
 
   function drawSpark(s: Spark) {
@@ -254,6 +204,7 @@ export function initSpace(onAstronaut: () => void) {
     pos.vy *= 1 - 1.6 * dt;
     pos.x += pos.vx * dt;
     pos.y += pos.vy * dt;
+    if (Math.abs(pos.vx) > 25) facing = pos.vx > 0 ? 1 : -1;
 
     if (Math.random() < dt * 2.2)
       sparks.push({
@@ -291,7 +242,8 @@ export function initSpace(onAstronaut: () => void) {
     const r = canvas.getBoundingClientRect();
     return { x: e.clientX - r.left, y: e.clientY - r.top };
   };
-  const onAstro = (p: { x: number; y: number }) => Math.abs(p.x - pos.x) < 52 && Math.abs(p.y - pos.y) < 56;
+  const onAstro = (p: { x: number; y: number }) =>
+    Math.abs(p.x - pos.x) < (ASTRO_W * PX) / 2 + 6 && Math.abs(p.y - pos.y) < (ASTRO_H * PX) / 2 + 6;
 
   canvas.addEventListener("pointermove", (e) => {
     pointer = local(e);
