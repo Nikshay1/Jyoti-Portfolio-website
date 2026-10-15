@@ -28,6 +28,10 @@ export function initSpace() {
   let planet: [number, number, number][] = [];
   let far: [number, number, number][] = [];
   let time = 0;
+  // Narrow screens zoom the whole sky out: a finer grid, smaller dots and
+  // smaller shapes, so a phone shows the same scene instead of a close-up.
+  let zoom = 1;
+  let g = DOT;
 
   const rand = (a: number, b: number) => a + Math.random() * (b - a);
 
@@ -36,24 +40,24 @@ export function initSpace() {
   function buildShapes() {
     moon = [];
     planet = [];
-    const mr = Math.min(80, h * 0.2);
+    const mr = Math.min(80, h * 0.2) * zoom;
     const mx = w * 0.12;
     const my = h * 0.42;
-    for (let x = mx - mr; x <= mx + mr; x += DOT)
-      for (let y = my - mr; y <= my + mr; y += DOT) {
-        const gx = Math.round(x / DOT) * DOT;
-        const gy = Math.round(y / DOT) * DOT;
+    for (let x = mx - mr; x <= mx + mr; x += g)
+      for (let y = my - mr; y <= my + mr; y += g) {
+        const gx = Math.round(x / g) * g;
+        const gy = Math.round(y / g) * g;
         const d = Math.hypot(gx - mx, gy - my);
         const inner = Math.hypot(gx - (mx + mr * 0.42), gy - (my - mr * 0.08));
         if (d < mr && inner > mr * 0.95) moon.push([gx, gy, Math.min(1, (inner - mr * 0.95) / (mr * 0.45)) * 0.7 + 0.15]);
       }
 
-    const pr = Math.min(110, h * 0.26);
+    const pr = Math.min(110, h * 0.26) * zoom;
     const px = w * 0.8;
     const py = h - pr * 0.55;
     const tilt = -0.28;
-    for (let gx = Math.floor((px - pr * 2.2) / DOT) * DOT; gx <= px + pr * 2.2; gx += DOT)
-      for (let gy = Math.floor((py - pr * 1.4) / DOT) * DOT; gy <= h; gy += DOT) {
+    for (let gx = Math.floor((px - pr * 2.2) / g) * g; gx <= px + pr * 2.2; gx += g)
+      for (let gy = Math.floor((py - pr * 1.4) / g) * g; gy <= h; gy += g) {
         const dx = gx - px;
         const dy = gy - py;
         const inside = Math.hypot(dx, dy) < pr;
@@ -66,7 +70,7 @@ export function initSpace() {
           // Lit from the upper right, with a sparse dither on the dark side.
           const light = Math.max(0, (dx * 0.6 - dy * 0.8) / pr);
           const a = 0.08 + light * 0.55;
-          if (a > 0.12 || (gx / DOT + gy / DOT) % 2 === 0) planet.push([gx, gy, a]);
+          if (a > 0.12 || Math.round(gx / g + gy / g) % 2 === 0) planet.push([gx, gy, a]);
         } else if (onRing && !(ry < 0 && Math.hypot(dx, dy) < pr * 1.05)) {
           planet.push([gx, gy, 0.35]);
         }
@@ -74,17 +78,17 @@ export function initSpace() {
 
     far = [];
     for (const f of FAR) {
-      const fr = f.r * DOT;
-      const fx = Math.round((w * f.x) / DOT) * DOT;
-      const fy = Math.round((h * f.y) / DOT) * DOT;
+      const fr = f.r * g;
+      const fx = Math.round((w * f.x) / g) * g;
+      const fy = Math.round((h * f.y) / g) * g;
       const reach = f.ring ? fr * 2 : fr;
-      for (let gx = fx - Math.ceil(reach / DOT) * DOT; gx <= fx + reach; gx += DOT)
-        for (let gy = fy - Math.ceil(fr / DOT) * DOT; gy <= fy + fr; gy += DOT) {
+      for (let gx = fx - Math.ceil(reach / g) * g; gx <= fx + reach; gx += g)
+        for (let gy = fy - Math.ceil(fr / g) * g; gy <= fy + fr; gy += g) {
           const dx = gx - fx;
           const dy = gy - fy;
           if (Math.hypot(dx, dy) < fr) {
             const light = Math.max(0, (dx * 0.6 - dy * 0.8) / fr);
-            if (light > 0.15 || (gx / DOT + gy / DOT) % 2 === 0) far.push([gx, gy, f.a * (0.3 + light * 0.7)]);
+            if (light > 0.15 || Math.round(gx / g + gy / g) % 2 === 0) far.push([gx, gy, f.a * (0.3 + light * 0.7)]);
           } else if (f.ring) {
             const rx = dx * Math.cos(0.3) + dy * Math.sin(0.3);
             const ry = -dx * Math.sin(0.3) + dy * Math.cos(0.3);
@@ -110,8 +114,8 @@ export function initSpace() {
   function spawnCluster(age = 0): Cluster {
     const pattern = PATTERNS[Math.floor(Math.random() * PATTERNS.length)];
     return {
-      x: Math.floor(rand(0, w) / DOT) * DOT,
-      y: Math.floor(rand(0, h) / DOT) * DOT,
+      x: Math.floor(rand(0, w) / g) * g,
+      y: Math.floor(rand(0, h) / g) * g,
       dots: pattern,
       t: age,
       life: rand(3, 8),
@@ -123,11 +127,13 @@ export function initSpace() {
     dpr = Math.min(2, devicePixelRatio || 1);
     w = r.width;
     h = r.height;
+    zoom = Math.min(1, Math.max(0.55, w / 1100));
+    g = DOT * zoom;
     canvas!.width = Math.round(w * dpr);
     canvas!.height = Math.round(h * dpr);
     ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
     buildShapes();
-    const count = Math.round((w * h) / 9000);
+    const count = Math.round((w * h) / (9000 * zoom));
     clusters = Array.from({ length: count }, () => {
       const c = spawnCluster();
       c.t = rand(0, c.life);
@@ -149,16 +155,16 @@ export function initSpace() {
     ctx!.clearRect(0, 0, w, h);
     ctx!.fillStyle = "#f7f7f5";
 
-    for (const [x, y, a] of far) dot(x, y, 1.2, a);
+    for (const [x, y, a] of far) dot(x, y, 1.2 * zoom, a);
 
     for (const c of clusters) {
       const a = Math.sin(Math.PI * Math.min(1, c.t / c.life)) * 0.55;
-      for (const [dx, dy] of c.dots) dot(c.x + dx * DOT, c.y + dy * DOT, 1.4, a);
+      for (const [dx, dy] of c.dots) dot(c.x + dx * g, c.y + dy * g, 1.4 * zoom, a);
     }
 
     const shimmer = (x: number, y: number) => 0.85 + 0.15 * Math.sin(time * 1.3 + x * 0.05 + y * 0.07);
-    for (const [x, y, a] of moon) dot(x, y, 1.6, a * shimmer(x, y));
-    for (const [x, y, a] of planet) dot(x, y, 1.6, a * shimmer(x, y));
+    for (const [x, y, a] of moon) dot(x, y, 1.6 * zoom, a * shimmer(x, y));
+    for (const [x, y, a] of planet) dot(x, y, 1.6 * zoom, a * shimmer(x, y));
     ctx!.globalAlpha = 1;
   }
 
