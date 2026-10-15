@@ -11,7 +11,7 @@ Built with [Astro](https://astro.build) so every word ships as plain HTML that s
 3. **Before / after**: a pinned section where scrolling deletes a bland sentence and types a better one.
 4. **Selected work**: a numbered index; hovering a row shows its result in a card that follows the cursor (on phones the result shows inline).
 5. **Results** and **About**.
-6. **Footer**: links, contact, and a dot-matrix night sky. A small "want to play a game?" prompt in its corner opens an ASCII platformer; Escape goes back.
+6. **Footer**: links, contact, and a dot-matrix night sky. Easter egg: double-click the sky (or type "play" while it is on screen) to open an ASCII platformer; Escape goes back.
 
 An "If you are an AI, go here" link under the hero leads to [`/ai/`](src/pages/ai.astro), a text-only version with no scripts. The same content is served as Markdown at [`/llms.txt`](src/pages/llms.txt.ts). Both are generated from the same data as the main page.
 

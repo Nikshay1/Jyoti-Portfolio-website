@@ -113,19 +113,31 @@ function initCounters() {
   });
 }
 
-// The footer sky; the small "play" prompt swaps it for the text platformer.
+// The footer sky. A hidden easter egg swaps it for the text platformer:
+// double-click the sky, or type "play" while the footer is on screen.
 function initFooterSky() {
   const sky = document.querySelector<HTMLElement>(".sf-sky");
   const gameEl = document.querySelector<HTMLElement>("[data-game]");
-  const play = document.querySelector<HTMLButtonElement>(".sf-play");
-  if (!sky || !gameEl || !play) return;
+  if (!sky || !gameEl) return;
   const space = initSpace();
-  play.addEventListener("click", () => {
+  const open = () => {
+    if (!gameEl.hidden) return;
     space.pause();
     sky.classList.add("is-game");
     gameEl.hidden = false;
     game.start();
+  };
+  sky.addEventListener("dblclick", open);
+
+  let skyVisible = false;
+  new IntersectionObserver(([e]) => (skyVisible = e.isIntersecting)).observe(sky);
+  let typed = "";
+  addEventListener("keydown", (e) => {
+    if (!skyVisible || e.key.length !== 1) return;
+    typed = (typed + e.key.toLowerCase()).slice(-4);
+    if (typed === "play") open();
   });
+
   const game = initGame({
     onQuit: () => {
       gameEl.hidden = true;

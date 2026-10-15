@@ -831,27 +831,7 @@ html:not(.js) .rw-static,
   height: 100%;
 }
 
-.sf-play {
-  position: absolute;
-  left: clamp(28px, 4vw, 56px);
-  bottom: 22px;
-  padding: 0;
-  border: 0;
-  background: none;
-  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
-  font-size: 11px;
-  color: rgba(247, 247, 245, 0.3);
-  cursor: pointer;
-  transition: color 0.4s var(--ease), opacity 0.4s;
-}
-
-.sf-play:hover,
-.sf-play:focus-visible {
-  color: var(--accent);
-}
-
-.sf-sky.is-game .space,
-.sf-sky.is-game .sf-play {
+.sf-sky.is-game .space {
   opacity: 0;
   pointer-events: none;
 }
