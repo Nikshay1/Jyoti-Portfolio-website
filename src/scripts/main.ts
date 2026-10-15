@@ -31,6 +31,7 @@ initPreview();
 if (!reduced) {
   initReveals();
   initCounters();
+  initPhoto();
   if (finePointer) initCursor();
 }
 ScrollTrigger.refresh();
@@ -79,6 +80,17 @@ function initReveals() {
       clearProps: "opacity,transform",
       scrollTrigger: { trigger: el, start: "top 92%" },
     });
+  });
+}
+
+// The portrait settles from a slight zoom as it scrolls through the view.
+function initPhoto() {
+  const img = document.querySelector<HTMLElement>(".photo img");
+  if (!img) return;
+  gsap.fromTo(img, { "--zoom": 1.18 }, {
+    "--zoom": 1,
+    ease: "none",
+    scrollTrigger: { trigger: ".about", start: "top bottom", end: "bottom top", scrub: true },
   });
 }
 

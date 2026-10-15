@@ -1,5 +1,7 @@
 ---
+import { Picture } from "astro:assets";
 import Base from "../layouts/Base.astro";
+import photo from "../assets/jyoti.jpg";
 import Intro from "../components/Intro.astro";
 import NameBar from "../components/NameBar.astro";
 import { about, hero, person, results, rewrite, work } from "../content/site";
@@ -101,7 +103,14 @@ const wordCount = (s: string) => s.trim().split(/\s+/).length;
       </div>
       <div class="grid about-grid">
         <figure class="photo c-4" data-reveal>
-          <span class="photo-ph" aria-hidden="true">JC</span>
+          <Picture
+            src={photo}
+            alt={`Portrait of ${person.name}`}
+            formats={["avif", "webp"]}
+            widths={[400, 700, 941]}
+            sizes="(max-width: 860px) 420px, 33vw"
+            loading="lazy"
+          />
         </figure>
         <div class="about-text at-6">
           {about.paragraphs.map((p, i) => (
