@@ -1,18 +1,36 @@
-// The night sky at the bottom of the footer: a dot-matrix starfield that
-// twinkles in small clusters, a dotted crescent moon and ringed planet, and
-// a few small, dim planets far behind them.
+// The night sky at the bottom of the footer: a dot-matrix field of pinpoint
+// and empty dots, with a dotted crescent moon and a ringed planet. Clusters
+// of full-size dots drift and change shape across it like ink in water.
 
 const DOT = 7; // grid spacing for every dotted shape, in CSS pixels
 
-// Distant planets: position as a fraction of the sky, radius in grid steps,
-// and peak brightness. Kept small and faint so they read as far away.
-const FAR = [
-  { x: 0.36, y: 0.24, r: 5, ring: false, a: 0.4 },
-  { x: 0.56, y: 0.74, r: 5.5, ring: true, a: 0.34 },
-  { x: 0.7, y: 0.26, r: 4, ring: false, a: 0.3 },
-];
+// --- noise -------------------------------------------------------------------
 
-type Cluster = { x: number; y: number; dots: [number, number][]; t: number; life: number };
+// Smooth 3D value noise in [0, 1]: a hash on the integer lattice, blended
+// with a smoothstep.
+function hash(x: number, y: number, z: number) {
+  let h = (x * 374761393 + y * 668265263 + z * 2147483647) | 0;
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967295;
+}
+
+function noise(x: number, y: number, z: number) {
+  const xi = Math.floor(x);
+  const yi = Math.floor(y);
+  const zi = Math.floor(z);
+  const s = (t: number) => t * t * (3 - 2 * t);
+  const u = s(x - xi);
+  const v = s(y - yi);
+  const w = s(z - zi);
+  const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+  const plane = (k: number) =>
+    lerp(
+      lerp(hash(xi, yi, k), hash(xi + 1, yi, k), u),
+      lerp(hash(xi, yi + 1, k), hash(xi + 1, yi + 1, k), u),
+      v,
+    );
+  return lerp(plane(zi), plane(zi + 1), w);
+}
 
 export function initSpace() {
   const canvas = document.querySelector<HTMLCanvasElement>(".space");
@@ -23,10 +41,16 @@ export function initSpace() {
   let w = 0;
   let h = 0;
   let dpr = 1;
-  let clusters: Cluster[] = [];
+  let cols = 0;
+  let rows = 0;
   let moon: [number, number, number][] = [];
   let planet: [number, number, number][] = [];
-  let far: [number, number, number][] = [];
+  // Grid cells covered by the moon or planet; the field is not drawn there.
+  let mask = new Uint8Array(0);
+  // Each background cell's resting size: a pinpoint, or nothing at all.
+  let rest = new Float32Array(0);
+  // Each cell's fixed share of a passing cluster, so clusters stay sparse.
+  let jitter = new Float32Array(0);
   let time = 0;
   // Narrow screens zoom the whole sky out: a finer grid, smaller dots and
   // smaller shapes, so a phone shows the same scene instead of a close-up.
@@ -34,6 +58,12 @@ export function initSpace() {
   let g = DOT;
 
   const rand = (a: number, b: number) => a + Math.random() * (b - a);
+
+  const cover = (x: number, y: number) => {
+    const i = Math.round(x / g);
+    const j = Math.round(y / g);
+    if (i >= 0 && i < cols && j >= 0 && j < rows) mask[i * rows + j] = 1;
+  };
 
   // --- static dotted shapes ------------------------------------------------
 
@@ -43,12 +73,13 @@ export function initSpace() {
     const mr = Math.min(80, h * 0.2) * zoom;
     const mx = w * 0.12;
     const my = h * 0.42;
-    for (let x = mx - mr; x <= mx + mr; x += g)
-      for (let y = my - mr; y <= my + mr; y += g) {
+    for (let x = mx - mr - g; x <= mx + mr + g; x += g)
+      for (let y = my - mr - g; y <= my + mr + g; y += g) {
         const gx = Math.round(x / g) * g;
         const gy = Math.round(y / g) * g;
         const d = Math.hypot(gx - mx, gy - my);
         const inner = Math.hypot(gx - (mx + mr * 0.42), gy - (my - mr * 0.08));
+        if (d < mr + g) cover(gx, gy);
         if (d < mr && inner > mr * 0.95) moon.push([gx, gy, Math.min(1, (inner - mr * 0.95) / (mr * 0.45)) * 0.7 + 0.15]);
       }
 
@@ -66,6 +97,7 @@ export function initSpace() {
         const ry = -dx * Math.sin(tilt) + dy * Math.cos(tilt);
         const e = Math.hypot(rx / (pr * 2), ry / (pr * 0.42));
         const onRing = e > 0.82 && e < 1;
+        if (Math.hypot(dx, dy) < pr + g || (e > 0.72 && e < 1.1)) cover(gx, gy);
         if (inside) {
           // Lit from the upper right, with a sparse dither on the dark side.
           const light = Math.max(0, (dx * 0.6 - dy * 0.8) / pr);
@@ -75,51 +107,6 @@ export function initSpace() {
           planet.push([gx, gy, 0.35]);
         }
       }
-
-    far = [];
-    for (const f of FAR) {
-      const fr = f.r * g;
-      const fx = Math.round((w * f.x) / g) * g;
-      const fy = Math.round((h * f.y) / g) * g;
-      const reach = f.ring ? fr * 2 : fr;
-      for (let gx = fx - Math.ceil(reach / g) * g; gx <= fx + reach; gx += g)
-        for (let gy = fy - Math.ceil(fr / g) * g; gy <= fy + fr; gy += g) {
-          const dx = gx - fx;
-          const dy = gy - fy;
-          if (Math.hypot(dx, dy) < fr) {
-            const light = Math.max(0, (dx * 0.6 - dy * 0.8) / fr);
-            if (light > 0.15 || Math.round(gx / g + gy / g) % 2 === 0) far.push([gx, gy, f.a * (0.3 + light * 0.7)]);
-          } else if (f.ring) {
-            const rx = dx * Math.cos(0.3) + dy * Math.sin(0.3);
-            const ry = -dx * Math.sin(0.3) + dy * Math.cos(0.3);
-            const e = Math.hypot(rx / (fr * 1.9), ry / (fr * 0.5));
-            if (e > 0.72 && e < 1.05) far.push([gx, gy, f.a * 0.6]);
-          }
-        }
-    }
-  }
-
-  // --- twinkling clusters ----------------------------------------------------
-
-  const PATTERNS: [number, number][][] = [
-    [[0, 0]],
-    [[0, 0], [1, 0]],
-    [[0, 0], [0, 1], [1, 1]],
-    [[0, 0], [1, 0], [0, 1], [1, 1]],
-    [[1, 0], [0, 1], [1, 1], [2, 1], [1, 2]],
-    [[0, 0], [2, 0], [1, 1], [0, 2], [2, 2]],
-    [[0, 0], [0, 1], [0, 2], [1, 3]],
-  ];
-
-  function spawnCluster(age = 0): Cluster {
-    const pattern = PATTERNS[Math.floor(Math.random() * PATTERNS.length)];
-    return {
-      x: Math.floor(rand(0, w) / g) * g,
-      y: Math.floor(rand(0, h) / g) * g,
-      dots: pattern,
-      t: age,
-      life: rand(3, 8),
-    };
   }
 
   function resize() {
@@ -132,14 +119,38 @@ export function initSpace() {
     canvas!.width = Math.round(w * dpr);
     canvas!.height = Math.round(h * dpr);
     ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cols = Math.ceil(w / g) + 1;
+    rows = Math.ceil(h / g) + 1;
+    mask = new Uint8Array(cols * rows);
+    rest = new Float32Array(cols * rows);
+    jitter = new Float32Array(cols * rows).map(() => Math.random());
+    // About half the background cells show a pinpoint, the rest are empty.
+    for (let k = 0; k < rest.length; k++) rest[k] = Math.random() < 0.5 ? 0 : rand(0.03, 0.09);
     buildShapes();
-    const count = Math.round((w * h) / (9000 * zoom));
-    clusters = Array.from({ length: count }, () => {
-      const c = spawnCluster();
-      c.t = rand(0, c.life);
-      return c;
-    });
     draw();
+  }
+
+  // --- flowing clusters ------------------------------------------------------
+
+  // Brightness of the cluster field at grid cell (i, j). The lookup point is
+  // pushed around by two slower noise fields (domain warping) that change
+  // over time, which bends the clusters into curls and filaments, and the
+  // whole field drifts, so they stretch, merge and split the way dye does in
+  // moving water. Time only moves the warp: animating the main field along
+  // its third axis would make the number of clusters swell and shrink.
+  const SCALE = 0.2; // noise cells per grid step: sets the cluster size
+  function field(i: number, j: number, k: number) {
+    const x = i * SCALE + time * 0.12;
+    const y = j * SCALE + time * 0.03;
+    const t = time * 0.06;
+    const qx = noise(x * 0.35, y * 0.35, t);
+    const qy = noise(x * 0.35 + 17.3, y * 0.35 + 9.1, t);
+    const n = noise(x + 3 * qx, y + 3 * qy, 40.5);
+    // Only the highest peaks become clusters, and not every cell in one
+    // lights up, so a cluster reads as a loose group of dots, not a blob.
+    const c = (n - 0.72) / 0.14;
+    if (c <= 0 || jitter[k] < 0.3) return 0;
+    return Math.min(1, c) * (0.45 + 0.4 * jitter[k]);
   }
 
   // --- drawing ---------------------------------------------------------------
@@ -151,7 +162,7 @@ export function initSpace() {
   const dot = (x: number, y: number, b: number) => {
     if (b < 0.02) return;
     // A small floor keeps the faintest dots as pinpoints instead of gaps.
-    const r = 0.32 * g * (0.14 + 0.86 * Math.min(1, b / FULL));
+    const r = 0.5 * g * (0.10 + 0.86 * Math.min(1, b / FULL));
     ctx!.moveTo(x + r, y);
     ctx!.arc(x, y, r, 0, Math.PI * 2);
   };
@@ -159,15 +170,15 @@ export function initSpace() {
   function draw() {
     ctx!.clearRect(0, 0, w, h);
     ctx!.fillStyle = "#f7f7f5";
-    ctx!.globalAlpha = 0.9;
+    ctx!.globalAlpha = 0.8;
     ctx!.beginPath();
 
-    for (const [x, y, b] of far) dot(x, y, b);
-
-    for (const c of clusters) {
-      const b = Math.sin(Math.PI * Math.min(1, c.t / c.life)) * 0.55;
-      for (const [dx, dy] of c.dots) dot(c.x + dx * g, c.y + dy * g, b);
-    }
+    for (let i = 0; i < cols; i++)
+      for (let j = 0; j < rows; j++) {
+        const k = i * rows + j;
+        if (mask[k]) continue;
+        dot(i * g, j * g, Math.max(rest[k], field(i, j, k)));
+      }
 
     const shimmer = (x: number, y: number) => 0.85 + 0.15 * Math.sin(time * 1.3 + x * 0.05 + y * 0.07);
     for (const [x, y, b] of moon) dot(x, y, b * shimmer(x, y));
@@ -177,12 +188,6 @@ export function initSpace() {
     ctx!.globalAlpha = 1;
   }
 
-  function step(dt: number) {
-    time += dt;
-    for (const c of clusters) c.t += dt;
-    clusters = clusters.map((c) => (c.t >= c.life ? spawnCluster() : c));
-  }
-
   // --- loop ------------------------------------------------------------------
 
   let raf = 0;
@@ -190,9 +195,8 @@ export function initSpace() {
   let visible = false;
 
   function frame(now: number) {
-    const dt = Math.min(0.05, (now - last) / 1000 || 0);
+    time += Math.min(0.05, (now - last) / 1000 || 0);
     last = now;
-    step(dt);
     draw();
     raf = visible ? requestAnimationFrame(frame) : 0;
   }
