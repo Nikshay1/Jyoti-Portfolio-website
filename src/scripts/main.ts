@@ -2,7 +2,6 @@ import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
-import { initGame } from "./game";
 import { runIntro } from "./intro";
 import { initSpace } from "./space";
 import { initName } from "./name";
@@ -30,7 +29,7 @@ initClock();
 initCopy();
 initAnchors();
 initPreview();
-initFooterSky();
+initSpace();
 if (!reduced) {
   initReveals();
   initCounters();
@@ -113,39 +112,6 @@ function initCounters() {
   });
 }
 
-// The footer sky. A hidden easter egg swaps it for the text platformer:
-// double-click the sky, or type "play" while the footer is on screen.
-function initFooterSky() {
-  const sky = document.querySelector<HTMLElement>(".sf-sky");
-  const gameEl = document.querySelector<HTMLElement>("[data-game]");
-  if (!sky || !gameEl) return;
-  const space = initSpace();
-  const open = () => {
-    if (!gameEl.hidden) return;
-    space.pause();
-    sky.classList.add("is-game");
-    gameEl.hidden = false;
-    game.start();
-  };
-  sky.addEventListener("dblclick", open);
-
-  let skyVisible = false;
-  new IntersectionObserver(([e]) => (skyVisible = e.isIntersecting)).observe(sky);
-  let typed = "";
-  addEventListener("keydown", (e) => {
-    if (!skyVisible || e.key.length !== 1) return;
-    typed = (typed + e.key.toLowerCase()).slice(-4);
-    if (typed === "play") open();
-  });
-
-  const game = initGame({
-    onQuit: () => {
-      gameEl.hidden = true;
-      sky.classList.remove("is-game");
-      space.resume();
-    },
-  });
-}
 
 // The dark card that follows the cursor over the work list.
 function initPreview() {

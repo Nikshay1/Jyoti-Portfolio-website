@@ -8,7 +8,7 @@ type Cluster = { x: number; y: number; dots: [number, number][]; t: number; life
 export function initSpace() {
   const canvas = document.querySelector<HTMLCanvasElement>(".space");
   const ctx = canvas?.getContext("2d");
-  if (!canvas || !ctx) return { pause: () => {}, resume: () => {} };
+  if (!canvas || !ctx) return;
 
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let w = 0;
@@ -18,7 +18,6 @@ export function initSpace() {
   let moon: [number, number, number][] = [];
   let planet: [number, number, number][] = [];
   let time = 0;
-  let paused = false;
 
   const rand = (a: number, b: number) => a + Math.random() * (b - a);
 
@@ -146,11 +145,11 @@ export function initSpace() {
     last = now;
     step(dt);
     draw();
-    raf = visible && !paused ? requestAnimationFrame(frame) : 0;
+    raf = visible ? requestAnimationFrame(frame) : 0;
   }
 
   function wake() {
-    if (reduced || raf || !visible || paused) return;
+    if (reduced || raf || !visible) return;
     last = performance.now();
     raf = requestAnimationFrame(frame);
   }
@@ -160,14 +159,4 @@ export function initSpace() {
     wake();
   }).observe(canvas);
   new ResizeObserver(resize).observe(canvas);
-
-  return {
-    pause() {
-      paused = true;
-    },
-    resume() {
-      paused = false;
-      wake();
-    },
-  };
 }
