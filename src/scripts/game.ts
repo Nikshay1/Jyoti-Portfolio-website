@@ -381,7 +381,7 @@ export function initGame({ onQuit }: { onQuit?: () => void } = {}) {
     screen!.append(probe);
     const cw = probe.getBoundingClientRect().width / 20;
     probe.remove();
-    if (!cw || !screen!.clientWidth) return; // hidden until the astronaut is clicked
+    if (!cw || !screen!.clientWidth) return; // hidden until someone opens the game
     cols = Math.max(24, Math.floor(screen!.clientWidth / cw));
     if (cols % 2) cols--;
   }

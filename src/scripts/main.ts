@@ -113,12 +113,14 @@ function initCounters() {
   });
 }
 
-// The footer sky; clicking the astronaut swaps it for the text platformer.
+// The footer sky; the small "play" prompt swaps it for the text platformer.
 function initFooterSky() {
   const sky = document.querySelector<HTMLElement>(".sf-sky");
   const gameEl = document.querySelector<HTMLElement>("[data-game]");
-  if (!sky || !gameEl) return;
-  const space = initSpace(() => {
+  const play = document.querySelector<HTMLButtonElement>(".sf-play");
+  if (!sky || !gameEl || !play) return;
+  const space = initSpace();
+  play.addEventListener("click", () => {
     space.pause();
     sky.classList.add("is-game");
     gameEl.hidden = false;

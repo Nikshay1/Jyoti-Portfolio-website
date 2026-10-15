@@ -831,37 +831,27 @@ html:not(.js) .rw-static,
   height: 100%;
 }
 
-.space.on-astro {
-  cursor: pointer;
-}
-
-.sf-hint {
+.sf-play {
   position: absolute;
   left: clamp(28px, 4vw, 56px);
   bottom: 22px;
+  padding: 0;
+  border: 0;
+  background: none;
   font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
   font-size: 11px;
-  color: rgba(247, 247, 245, 0.28);
-  pointer-events: none;
-  transition: opacity 0.4s;
+  color: rgba(247, 247, 245, 0.3);
+  cursor: pointer;
+  transition: color 0.4s var(--ease), opacity 0.4s;
 }
 
-.hint-touch {
-  display: none;
-}
-
-@media (hover: none), (pointer: coarse) {
-  .hint-fine {
-    display: none;
-  }
-
-  .hint-touch {
-    display: inline;
-  }
+.sf-play:hover,
+.sf-play:focus-visible {
+  color: var(--accent);
 }
 
 .sf-sky.is-game .space,
-.sf-sky.is-game .sf-hint {
+.sf-sky.is-game .sf-play {
   opacity: 0;
   pointer-events: none;
 }
