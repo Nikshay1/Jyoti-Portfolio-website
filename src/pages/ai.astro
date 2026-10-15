@@ -11,7 +11,7 @@ import { about, hero, person, results, rewrite, seo, work } from "../content/sit
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{person.name}, {person.role} (text version)</title>
     <meta name="description" content={seo.description} />
-    <link rel="canonical" href="/ai/" />
+    <link rel="canonical" href={new URL("/ai/", Astro.site)} />
     <link rel="alternate" type="text/markdown" href="/llms.txt" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <style>
