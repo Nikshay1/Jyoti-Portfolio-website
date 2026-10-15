@@ -1,6 +1,7 @@
 import { defineConfig } from "astro/config";
 
 export default defineConfig({
-  // The address her resume links to.
-  site: "https://jyoti-portfolio-kappa.vercel.app",
+  // Main address. The older jyoti-portfolio-kappa.vercel.app (on her
+  // resume) points at the same Vercel project and still works.
+  site: "https://jyoti-chauhan.vercel.app",
 });
