@@ -1,0 +1,34 @@
+---
+import { intro, person } from "../content/site";
+---
+
+<div class="intro" aria-hidden="true">
+  <div class="intro-col">
+    <div class="sbox">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+        <circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+        <path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+      </svg>
+      <span class="sq" data-text={intro.query}></span><span class="caret"></span>
+    </div>
+    <div class="serp">
+      <div class="serp-inner">
+        <div class="ov">
+          <div class="ov-label"><span class="spark">✦</span> Overview</div>
+          <p class="ov-text" data-text={intro.overview}></p>
+        </div>
+        <div class="res res-hit">
+          <div class="res-site">
+            <span class="res-fav">JC</span>
+            <span>{person.name}<small>Portfolio</small></span>
+          </div>
+          <div class="res-title">{intro.resultTitle}</div>
+          <div class="res-snip">{intro.resultSnippet}</div>
+        </div>
+        <div class="res res-ghost"><i></i><i></i><i></i></div>
+        <div class="res res-ghost"><i></i><i></i><i></i></div>
+      </div>
+    </div>
+  </div>
+  <button class="intro-skip" type="button" tabindex="-1">Skip intro</button>
+</div>

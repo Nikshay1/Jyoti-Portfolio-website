@@ -1,0 +1,51 @@
+---
+import "@fontsource-variable/inter-tight";
+import "@fontsource/instrument-serif/400.css";
+import "@fontsource/instrument-serif/400-italic.css";
+import "../styles/global.css";
+import { person, seo } from "../content/site";
+
+const ld = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: person.name,
+  jobTitle: person.role,
+  email: `mailto:${person.email}`,
+  address: { "@type": "PostalAddress", addressLocality: "Delhi", addressCountry: "IN" },
+  knowsAbout: ["SEO content", "Content writing", "Copywriting", "Landing pages", "GEO"],
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{seo.title}</title>
+    <meta name="description" content={seo.description} />
+    <meta name="author" content={person.name} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={seo.title} />
+    <meta property="og:description" content={seo.description} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="theme-color" content="#f1f0eb" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>
+      // Decide before first paint whether the search intro plays, so
+      // repeat visits never flash it.
+      document.documentElement.classList.add("js");
+      try {
+        if (
+          sessionStorage.getItem("intro-seen") ||
+          matchMedia("(prefers-reduced-motion: reduce)").matches
+        ) {
+          document.documentElement.classList.add("skip-intro");
+        }
+      } catch (e) {}
+    </script>
+    <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

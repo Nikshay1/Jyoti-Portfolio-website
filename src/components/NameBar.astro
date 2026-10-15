@@ -1,0 +1,20 @@
+---
+import { person } from "../content/site";
+const first = person.first.toUpperCase();
+const last = person.last.toUpperCase();
+---
+
+<!-- The giant name at the top. As you scroll it shrinks and folds down to
+     its initials, which stay pinned in the corners as the site's header. -->
+<header class="bar">
+  <a class="name" href="#top" aria-label={`${person.name}, back to top`}>
+    <span class="w"><span class="ini">{first[0]}</span><span class="rest">{first.slice(1)}</span></span>
+    <span class="w"><span class="ini">{last[0]}</span><span class="rest">{last.slice(1)}</span></span>
+  </a>
+  <nav class="bar-nav" aria-label="Sections">
+    <a href="#work">Work</a>
+    <a href="#results">Results</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>

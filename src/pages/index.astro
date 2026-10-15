@@ -1,0 +1,164 @@
+---
+import Base from "../layouts/Base.astro";
+import Intro from "../components/Intro.astro";
+import NameBar from "../components/NameBar.astro";
+import { about, hero, person, results, rewrite, work } from "../content/site";
+
+const pad = (n: number) => String(n).padStart(2, "0");
+const wordCount = (s: string) => s.trim().split(/\s+/).length;
+---
+
+<Base>
+  <Intro />
+  <NameBar />
+
+  <main id="top">
+    <div class="hero-pad" aria-hidden="true"></div>
+
+    <section class="hero wrap">
+      <h1 class="sr-only">{person.name}, {person.role.toLowerCase()}</h1>
+      <div class="meta grid">
+        <p class="c-3" data-hero><span class="num">(01)</span> {person.role}</p>
+        <p class="c-3" data-hero>{person.focus}</p>
+        <p class="c-3" data-hero>{person.city} <span class="mute">— <span data-clock>IST</span></span></p>
+        <p class="c-3 right" data-hero><span class="dot"></span>{person.availability}</p>
+      </div>
+      <p class="statement" data-hero-lines>
+        {hero.lead} <em>{hero.accent}</em>
+      </p>
+      <p class="scroll-hint" data-hero>Scroll</p>
+    </section>
+
+    <section class="rewrite" aria-label="Before and after">
+      <div class="rw-stick wrap">
+        <div class="rw-top grid">
+          <p class="c-3"><span class="num">(02)</span> What I do</p>
+          <p class="c-6 mute">The same idea, before and after an edit.</p>
+          <p class="c-3 right"><span class="rw-state">Before</span> · <span class="rw-words">{wordCount(rewrite.before)}</span> words</p>
+        </div>
+        <p class="rw-text" data-before={rewrite.before} data-after={rewrite.after}>
+          <span class="rw-out">{rewrite.before}</span><span class="caret"></span>
+        </p>
+        <div class="rw-static">
+          <p class="rw-before">{rewrite.before}</p>
+          <p class="rw-after">{rewrite.after}</p>
+        </div>
+        <div class="rw-bar"><i></i></div>
+      </div>
+    </section>
+
+    <section id="work" class="work wrap">
+      <div class="sec-head grid">
+        <p class="c-3"><span class="num">(03)</span> Selected work</p>
+        <h2 class="c-9 sec-title" data-lines>Pages and campaigns, and what they did.</h2>
+      </div>
+      <div class="list" role="list">
+        <div class="row row-head" aria-hidden="true">
+          <span>No.</span><span>Project</span><span>For</span><span>Type</span><span class="right">Year</span>
+        </div>
+        {work.map((w, i) => {
+          const Tag = w.href ? "a" : "div";
+          return (
+            <Tag class="row" role="listitem" data-reveal {...(w.href ? { href: w.href, target: "_blank", rel: "noopener" } : {})}>
+              <span class="r-no">{pad(i + 1)}</span>
+              <span class="r-title">{w.title}{w.href && <span class="arrow">↗</span>}</span>
+              <span class="r-org">{w.org}</span>
+              <span class="r-type">{w.type}</span>
+              <span class="r-year right">{w.year}</span>
+              <span class="r-card">
+                <span class="card-result">{w.result}</span>
+                <span class="card-note">{w.note}</span>
+                <span class="card-meta">{w.type} · {w.year}</span>
+              </span>
+            </Tag>
+          );
+        })}
+      </div>
+      <div class="preview" aria-hidden="true"></div>
+    </section>
+
+    <section id="results" class="results wrap">
+      <div class="sec-head grid">
+        <p class="c-3"><span class="num">(04)</span> Results</p>
+        <h2 class="c-9 sec-title" data-lines>Numbers, not adjectives.</h2>
+      </div>
+      <div class="stats">
+        {results.map((r) => (
+          <div class="stat" data-reveal>
+            <p class="stat-value">
+              {r.prefix}
+              {r.count !== null && <span data-count={r.count}>{r.count}</span>}
+              {r.suffix}
+            </p>
+            <p class="stat-label">{r.label}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section id="about" class="about wrap">
+      <div class="sec-head grid">
+        <p class="c-3"><span class="num">(05)</span> About</p>
+      </div>
+      <div class="grid about-grid">
+        <figure class="photo c-4" data-reveal>
+          <span class="photo-ph" aria-hidden="true">JC</span>
+        </figure>
+        <div class="about-text at-6">
+          {about.paragraphs.map((p, i) => (
+            <p class={i === 0 ? "about-lead" : "about-p"} data-lines>{p}</p>
+          ))}
+
+          <div class="about-cols">
+            <div data-reveal>
+              <h3 class="label">What I write</h3>
+              <ul class="plain">
+                {about.services.map((s) => <li>{s}</li>)}
+              </ul>
+            </div>
+            <div data-reveal>
+              <h3 class="label">Experience</h3>
+              <ul class="plain exp">
+                {about.experience.map((e) => (
+                  <li><span>{e.role}<small>{e.org}</small></span><span class="mute">{e.years}</span></li>
+                ))}
+              </ul>
+              <h3 class="label">Education</h3>
+              <p>{about.education}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact">
+      <div class="wrap">
+        <div class="sec-head grid">
+          <p class="c-3"><span class="num">(06)</span> Contact</p>
+          <h2 class="c-9 contact-title" data-lines>
+            Got a page that should rank? <em>Let's write it.</em>
+          </h2>
+        </div>
+        <div class="grid">
+          <div class="at-4">
+            <a class="email" href={`mailto:${person.email}`} data-cursor>{person.email}</a>
+            <div class="contact-actions">
+              <button class="btn" type="button" data-copy={person.email}>Copy email</button>
+              {person.resume && <a class="btn" href={person.resume} download>Download resume</a>}
+            </div>
+          </div>
+        </div>
+        <footer class="foot grid">
+          <p class="c-3">© 2026 {person.name}</p>
+          <p class="c-3">{person.city} — <span data-clock>IST</span></p>
+          <p class="c-3">Set in Inter Tight &amp; Instrument Serif</p>
+          <p class="c-3 right"><a href="#top">Back to top ↑</a></p>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    import "../scripts/main";
+  </script>
+</Base>
