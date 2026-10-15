@@ -270,6 +270,42 @@ section {
   letter-spacing: -0.03em;
 }
 
+.ai-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  margin-top: clamp(40px, 5vw, 72px);
+  padding: 9px 14px;
+  border: 1px solid var(--line);
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 12px;
+  letter-spacing: 0;
+  transition: border-color 0.4s var(--ease), background 0.4s var(--ease), color 0.4s var(--ease);
+}
+
+.ai-link .mute {
+  transition: color 0.4s var(--ease);
+}
+
+.ai-arrow {
+  color: var(--accent);
+  transition: transform 0.5s var(--ease);
+}
+
+.ai-link:hover {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.ai-link:hover .mute {
+  color: rgba(247, 247, 245, 0.6);
+}
+
+.ai-link:hover .ai-arrow {
+  transform: translateX(4px);
+}
+
 /* ---------- rewrite ---------- */
 
 .rewrite {

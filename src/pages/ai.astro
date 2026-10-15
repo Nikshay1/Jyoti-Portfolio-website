@@ -1,0 +1,78 @@
+---
+// Text-only version of the portfolio for AI assistants and crawlers:
+// no scripts, no animation, just headings, lists and links.
+import { about, hero, person, results, rewrite, seo, work } from "../content/site";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{person.name}, {person.role} (text version)</title>
+    <meta name="description" content={seo.description} />
+    <link rel="canonical" href="/ai/" />
+    <link rel="alternate" type="text/markdown" href="/llms.txt" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <style>
+      body {
+        max-width: 42rem;
+        margin: 0 auto;
+        padding: 2rem 1rem 4rem;
+        background: #fff;
+        color: #111;
+        font: 16px/1.6 system-ui, sans-serif;
+      }
+      a { color: inherit; }
+      h2 { margin-top: 2.5rem; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>{person.name}</h1>
+      <p>{seo.description}</p>
+      <ul>
+        <li>Role: {person.role} ({person.focus})</li>
+        <li>Based in: {person.city}</li>
+        <li>Status: {person.availability}</li>
+        <li>Email: <a href={`mailto:${person.email}`}>{person.email}</a></li>
+        <li>Same content as Markdown: <a href="/llms.txt">/llms.txt</a></li>
+        <li>Designed version for people: <a href="/">home page</a></li>
+      </ul>
+
+      <h2>In one line</h2>
+      <p>{hero.lead} {hero.accent}</p>
+
+      <h2>How she edits</h2>
+      <p>Before: “{rewrite.before}”</p>
+      <p>After: “{rewrite.after}”</p>
+
+      <h2>Selected work</h2>
+      <ul>
+        {work.map((w) => (
+          <li>
+            <strong>{w.href ? <a href={w.href}>{w.title}</a> : w.title}</strong> ({w.type}, {w.year}).
+            Client: {w.org}. Result: {w.result}. {w.note}
+          </li>
+        ))}
+      </ul>
+
+      <h2>Results</h2>
+      <ul>
+        {results.map((r) => <li>{r.prefix}{r.count ?? ""}{r.suffix} {r.label}</li>)}
+      </ul>
+
+      <h2>About</h2>
+      {about.paragraphs.map((p) => <p>{p}</p>)}
+      <h3>What she writes</h3>
+      <ul>{about.services.map((s) => <li>{s}</li>)}</ul>
+      <h3>Experience</h3>
+      <ul>{about.experience.map((e) => <li>{e.role}, {e.org} ({e.years})</li>)}</ul>
+      <h3>Education</h3>
+      <p>{about.education}</p>
+
+      <h2>Contact</h2>
+      <p>Email <a href={`mailto:${person.email}`}>{person.email}</a> to hire her or ask about her work.</p>
+    </main>
+  </body>
+</html>

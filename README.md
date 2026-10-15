@@ -10,7 +10,9 @@ Built with [Astro](https://astro.build) so every word ships as plain HTML that s
 2. **Name bar**: her name fills the screen, then folds down to the initials **J** and **C** in the corners as you scroll.
 3. **Before / after**: a pinned section where scrolling deletes a bland sentence and types a better one.
 4. **Selected work**: a numbered index; hovering a row shows its result in a card that follows the cursor (on phones the result shows inline).
-5. **Results**, **About**, **Contact**.
+5. **Results**, **About**, **Contact**, and a small ASCII platformer in the footer.
+
+An "If you are an AI, go here" link under the hero leads to [`/ai/`](src/pages/ai.astro), a text-only version with no scripts. The same content is served as Markdown at [`/llms.txt`](src/pages/llms.txt.ts). Both are generated from the same data as the main page.
 
 Reduced-motion users get the same content with no intro, no smooth scroll, and both rewrite sentences shown side by side.
 
