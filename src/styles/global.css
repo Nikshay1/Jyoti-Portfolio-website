@@ -270,31 +270,6 @@ section {
   letter-spacing: -0.03em;
 }
 
-.scroll-hint {
-  margin-top: clamp(48px, 7vw, 96px);
-  font-size: 13px;
-  color: var(--mute);
-}
-
-.scroll-hint::after {
-  content: "";
-  display: inline-block;
-  width: 1px;
-  height: 28px;
-  margin-left: 12px;
-  vertical-align: middle;
-  background: currentColor;
-  transform-origin: top;
-  animation: drip 2s var(--ease) infinite;
-}
-
-@keyframes drip {
-  0% { transform: scaleY(0); transform-origin: top; }
-  50% { transform: scaleY(1); transform-origin: top; }
-  51% { transform: scaleY(1); transform-origin: bottom; }
-  100% { transform: scaleY(0); transform-origin: bottom; }
-}
-
 /* ---------- rewrite ---------- */
 
 .rewrite {
