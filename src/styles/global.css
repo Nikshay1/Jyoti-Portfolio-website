@@ -1,7 +1,7 @@
 :root {
-  --paper: #f1f0eb;
+  --paper: #f7f7f5;
   --ink: #0e0e0e;
-  --mute: #8b8a84;
+  --mute: #8a8a8a;
   --line: rgba(14, 14, 14, 0.14);
   --accent: #ff4f1a;
   --g: clamp(16px, 2.2vw, 32px);
@@ -518,14 +518,14 @@ html:not(.js) .rw-static,
 .preview .card-note {
   font-size: 14px;
   line-height: 1.4;
-  color: rgba(241, 240, 235, 0.75);
+  color: rgba(247, 247, 245, 0.75);
 }
 
 .preview .card-meta {
   padding-top: 12px;
-  border-top: 1px solid rgba(241, 240, 235, 0.18);
+  border-top: 1px solid rgba(247, 247, 245, 0.18);
   font-size: 12px;
-  color: rgba(241, 240, 235, 0.5);
+  color: rgba(247, 247, 245, 0.5);
 }
 
 /* Touch screens have no hover, so each row shows its result inline. */
@@ -601,7 +601,7 @@ html:not(.js) .rw-static,
   top: calc(var(--g) + 72px);
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  background: #e2e0d8;
+  background: #ebebe9;
 }
 
 .photo img {
@@ -677,8 +677,8 @@ html:not(.js) .rw-static,
   padding-top: clamp(96px, 12vw, 180px);
   background: var(--ink);
   color: var(--paper);
-  --line: rgba(241, 240, 235, 0.16);
-  --mute: rgba(241, 240, 235, 0.5);
+  --line: rgba(247, 247, 245, 0.16);
+  --mute: rgba(247, 247, 245, 0.5);
 }
 
 .contact-title {
@@ -813,7 +813,7 @@ html.js:not(.skip-intro) body {
 .ov {
   padding: 20px 22px;
   border-radius: 18px;
-  background: #e8e6de;
+  background: #efefed;
 }
 
 .ov-label {
@@ -874,7 +874,7 @@ html.js:not(.skip-intro) body {
 .res-snip {
   margin-top: 4px;
   font-size: 14px;
-  color: #55544f;
+  color: #555555;
 }
 
 .res-ghost {
@@ -886,7 +886,7 @@ html.js:not(.skip-intro) body {
   display: block;
   height: 10px;
   border-radius: 6px;
-  background: #e2e0d8;
+  background: #ebebe9;
 }
 
 .res-ghost i:nth-child(1) { width: 30%; }
