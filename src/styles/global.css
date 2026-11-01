@@ -960,7 +960,6 @@ html:not(.js) .bin-foot {
 }
 
 .bin-btn,
-.bin-credit,
 .bin-hire {
   padding: 6px 0;
   border: 0;
@@ -971,8 +970,7 @@ html:not(.js) .bin-foot {
   transition: color 0.3s var(--ease);
 }
 
-.bin-btn:hover,
-.bin-credit:hover {
+.bin-btn:hover {
   color: var(--paper);
 }
 
