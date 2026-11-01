@@ -975,7 +975,7 @@ html:not(.js) .bin-foot {
 }
 
 .bin-hire {
-  color: var(--accent);
+  color: var(--paper);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
