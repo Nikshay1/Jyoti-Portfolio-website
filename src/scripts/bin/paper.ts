@@ -15,7 +15,7 @@ const GRAVITY = 13;
 const MAX_SPEED = 21;
 const LOB = 7.2;
 const ROLL_DRAG = 9;
-const WIND_PER_LEVEL = 1;
+const WIND_PER_LEVEL = 1.9;
 const TIME_LIMIT = 4;
 
 export type Hit = "floor" | "wall" | "desk" | "rim" | "in" | "gone" | "rest";
