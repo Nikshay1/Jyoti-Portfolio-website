@@ -149,7 +149,7 @@ export function startBinGame(root: HTMLElement) {
     state.power = 0;
     line.classList.remove("struck");
     line.textContent = binGame.final(state.score, SHOTS);
-    say(binGame.closing);
+    say("");
     root.classList.add("bin-over");
     again.hidden = false;
     hire.hidden = false;

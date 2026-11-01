@@ -68,7 +68,6 @@ export const binGame = {
     score === 0
       ? "All ten clichés survived."
       : `${score} points from ${shots} clichés.`,
-  closing: "Real pages deserve better lines than these.",
   hire: "Send me yours",
   again: "play again",
   lines: [
