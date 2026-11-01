@@ -335,23 +335,20 @@ export function startBinGame(root: HTMLElement) {
 
   function drawAim() {
     if (state.power < 0.06) return;
-    const points = previewPath(state.yaw, state.power);
+    const points = previewPath(state.yaw, state.power, wind());
     const ink = pack(255, 244, 222);
-    const shown = wind() ? Math.ceil(points.length * 0.72) : points.length;
-    for (let k = 1; k < shown; k += 2) {
+    for (let k = 1; k < points.length; k += 2) {
       const p = project(points[k][0], points[k][1], points[k][2]);
       overlay(p.sx, p.sy, ink);
       overlay(p.sx + 1, p.sy, ink);
       overlay(p.sx, p.sy + 1, ink);
       overlay(p.sx + 1, p.sy + 1, ink);
     }
-    if (!wind() && points.length) {
-      const end = points[points.length - 1];
-      const p = project(end[0], end[1], BIN_H);
-      for (let k = -2; k <= 2; k++) {
-        overlay(p.sx + k, p.sy, ink);
-        overlay(p.sx, p.sy + k, ink);
-      }
+    const end = points[points.length - 1];
+    const p = project(end[0], end[1], BIN_H);
+    for (let k = -2; k <= 2; k++) {
+      overlay(p.sx + k, p.sy, ink);
+      overlay(p.sx, p.sy + k, ink);
     }
   }
 

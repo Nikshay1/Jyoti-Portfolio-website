@@ -15,7 +15,7 @@ const GRAVITY = 13;
 const MAX_SPEED = 21;
 const LOB = 7.2;
 const ROLL_DRAG = 9;
-const WIND_PER_LEVEL = 1.9;
+const WIND_PER_LEVEL = 1;
 const TIME_LIMIT = 4;
 
 export type Hit = "floor" | "wall" | "desk" | "rim" | "in" | "gone" | "rest";
@@ -56,21 +56,26 @@ export function makePaper(yaw: number, power: number): Paper {
   };
 }
 
-// The path a throw would take with the fan off, as [x, y, z] points. It stops
-// once the ball drops to rim height or the floor.
-export function previewPath(yaw: number, power: number) {
+// The path a throw will take, fan included, as [x, y, z] points. It stops once
+// the ball drops to rim height or the floor. Uses the same step size as a
+// 60fps game, so the line tells the truth about where the ball goes.
+export function previewPath(yaw: number, power: number, windLevel: number) {
   const v = launchVelocity(yaw, power);
   const points: [number, number, number][] = [];
   let { x, y, z } = THROW_FROM;
-  let vz = v.vz;
-  const dt = 0.03;
-  for (let k = 0; k < 90; k++) {
-    x += v.vx * dt;
-    y += v.vy * dt;
+  let { vy, vz } = v;
+  const dt = 1 / 240;
+  for (let k = 0; k < 720; k++) {
     vz -= GRAVITY * dt;
+    vy += windLevel * WIND_PER_LEVEL * dt;
+    x += v.vx * dt;
+    y += vy * dt;
     z += vz * dt;
-    if (vz < 0 && z <= BIN_H) break;
-    points.push([x, y, z]);
+    if (vz < 0 && z <= BIN_H) {
+      points.push([x, y, z]);
+      break;
+    }
+    if (k % 7 === 6) points.push([x, y, z]);
   }
   return points;
 }
