@@ -822,13 +822,212 @@ html:not(.js) .rw-static,
 
 .sf-sky {
   position: relative;
-  height: clamp(320px, 38vw, 560px);
+  height: clamp(500px, 44vw, 760px);
 }
 
 .space {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
+}
+
+/* The footer game sits on the sky. Without scripts there's only the sky. */
+html:not(.js) .bin-head,
+html:not(.js) .bin-tally,
+html:not(.js) .bin-stage,
+html:not(.js) .bin-foot {
+  display: none;
+}
+
+.bin-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bin-canvas {
+  display: block;
+  image-rendering: pixelated;
+  touch-action: pan-y;
+  cursor: grab;
+  outline: none;
+}
+
+.bin-pulling .bin-canvas {
+  cursor: grabbing;
+}
+
+.bin-canvas:focus-visible {
+  outline: 1px dashed var(--mute);
+  outline-offset: 2px;
+}
+
+.bin-head {
+  position: absolute;
+  top: clamp(20px, 2.4vw, 32px);
+  left: clamp(28px, 4vw, 56px);
+  z-index: 1;
+  width: min(30vw, 400px);
+  pointer-events: none;
+}
+
+.bin-head .sf-label {
+  margin-bottom: 10px;
+}
+
+.bin-line {
+  min-height: 2.2em;
+  font-family: var(--serif);
+  font-size: clamp(24px, 2.4vw, 36px);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.bin-line span {
+  background: linear-gradient(var(--accent), var(--accent)) no-repeat 0 56% / 0 2px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-size 0.5s var(--ease), color 0.5s var(--ease);
+}
+
+.bin-line span.struck {
+  background-size: 100% 2px;
+  color: var(--mute);
+}
+
+.bin-tally {
+  position: absolute;
+  top: clamp(20px, 2.4vw, 32px);
+  right: clamp(28px, 4vw, 56px);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  pointer-events: none;
+}
+
+.bin-score {
+  font-size: clamp(24px, 2.4vw, 36px);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.bin-left {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--mute);
+}
+
+.bin-foot {
+  position: absolute;
+  right: clamp(28px, 4vw, 56px);
+  bottom: clamp(16px, 2vw, 24px);
+  left: clamp(28px, 4vw, 56px);
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px 32px;
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--mute);
+  pointer-events: none;
+}
+
+.bin-status {
+  max-width: 26em;
+  color: var(--paper);
+}
+
+.bin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px 20px;
+  pointer-events: auto;
+}
+
+.bin-actions [hidden] {
+  display: none;
+}
+
+.bin-btn,
+.bin-credit,
+.bin-hire {
+  padding: 6px 0;
+  border: 0;
+  background: none;
+  color: var(--mute);
+  font: inherit;
+  cursor: pointer;
+  transition: color 0.3s var(--ease);
+}
+
+.bin-btn:hover,
+.bin-credit:hover {
+  color: var(--paper);
+}
+
+.bin-hire {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.bin-over .bin-btn[data-bin-again] {
+  color: var(--paper);
+}
+
+@media (max-width: 860px) {
+  .sf-sky {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: auto;
+    padding: 20px 0;
+  }
+
+  .bin-head,
+  .bin-tally,
+  .bin-stage,
+  .bin-foot {
+    position: relative;
+    inset: auto;
+  }
+
+  .bin-head {
+    width: auto;
+    padding: 0 76px 0 clamp(16px, 4vw, 28px);
+  }
+
+  .bin-tally {
+    position: absolute;
+    top: 20px;
+    right: clamp(16px, 4vw, 28px);
+  }
+
+  .bin-stage {
+    width: 100%;
+    aspect-ratio: 340 / 236;
+  }
+
+  .bin-foot {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 clamp(16px, 4vw, 28px);
+  }
+
+  .bin-actions {
+    justify-content: flex-start;
+  }
 }
 
 /* ---------- search intro ---------- */

@@ -11,11 +11,11 @@ Built with [Astro](https://astro.build) so every word ships as plain HTML that s
 3. **Before / after**: a pinned section where scrolling deletes a bland sentence and types a better one.
 4. **Selected work**: a numbered index; hovering a row shows its result in a card that follows the cursor (on phones the result shows inline).
 5. **Results** and **About**.
-6. **Footer**: links, contact, and a dot-matrix night sky with twinkling stars, a moon and a ringed planet.
+6. **Footer**: links, contact, and a dot-matrix night sky with twinkling stars, a moon and a ringed planet. A small game floats in the sky: **Bin the cliché**, where you throw crumpled marketing clichés into a bin in an isometric pixel-art writer's room. Its look is inspired by [Pixel Plays](https://pixel-plays-ruby.vercel.app/), written from scratch in [`src/scripts/bin/`](src/scripts/bin/). Its code only loads once the footer is close.
 
 An "If you are an AI, go here" link under the hero leads to [`/ai/`](src/pages/ai.astro), a text-only version with no scripts. The same content is served as Markdown at [`/llms.txt`](src/pages/llms.txt.ts). Both are generated from the same data as the main page.
 
-Reduced-motion users get the same content with no intro, no smooth scroll, and both rewrite sentences shown side by side.
+Reduced-motion users get the same content with no intro, no smooth scroll, and both rewrite sentences shown side by side. The game stays playable for them, with its background animation frozen.
 
 ## Editing content
 
