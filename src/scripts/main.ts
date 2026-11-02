@@ -42,6 +42,7 @@ ScrollTrigger.refresh();
 runIntro(() => {
   lenis?.start();
   if (!reduced) playHero();
+  initSharks();
 });
 
 // ---------------------------------------------------------------------------
@@ -169,6 +170,24 @@ function initCursor() {
   });
   document.addEventListener("pointerleave", () => dot.classList.add("gone"));
   document.addEventListener("pointerenter", () => dot.classList.remove("gone"));
+}
+
+// The sharks' code only loads once the intro is out of the way. They hide
+// (and so stop drawing) once the footer panel has scrolled over the page.
+function initSharks() {
+  const canvas = document.querySelector<HTMLCanvasElement>(".sharks");
+  const main = document.querySelector("main");
+  if (!canvas || !main) return;
+  void import("./sharks/engine").then(({ OceanEngine }) => {
+    new OceanEngine(canvas, [
+      { kind: "classic", size: 1 },
+      { kind: "hammerhead", size: 0.85 },
+      { kind: "classic", size: 0.7 },
+    ]);
+    new IntersectionObserver(([entry]) => {
+      canvas.hidden = !entry.isIntersecting;
+    }).observe(main);
+  });
 }
 
 // The game's code and room bake only load once the footer is close.

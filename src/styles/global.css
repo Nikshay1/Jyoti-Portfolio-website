@@ -87,6 +87,20 @@ button {
   outline-offset: 3px;
 }
 
+/* ---------- sharks ---------- */
+
+.sharks {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100vw;
+  height: 100vh;
+  height: 100lvh;
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  pointer-events: none;
+}
+
 /* ---------- layout ---------- */
 
 .wrap {

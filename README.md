@@ -13,6 +13,8 @@ Built with [Astro](https://astro.build) so every word ships as plain HTML that s
 5. **Results** and **About**.
 6. **Footer**: links, contact, and a dot-matrix night sky with twinkling stars, a moon and a ringed planet. A small game floats in the sky: **Bin the cliché**, where you throw crumpled marketing clichés into a bin in an isometric pixel-art writer's room. Its look is inspired by [Pixel Plays](https://pixel-plays-ruby.vercel.app/), written from scratch in [`src/scripts/bin/`](src/scripts/bin/). Its code only loads once the footer is close.
 
+Behind all of this, faint ASCII sharks hunt schools of fish across the page, and the fish scatter from the cursor. The code is adapted from [ascii-sharks](https://github.com/stackedlol/ascii-sharks) (MIT, licence in [`src/scripts/sharks/`](src/scripts/sharks/)), recoloured for the paper background. It loads after the intro and stops drawing once the footer covers the page.
+
 An "If you are an AI, go here" link under the hero leads to [`/ai/`](src/pages/ai.astro), a text-only version with no scripts. The same content is served as Markdown at [`/llms.txt`](src/pages/llms.txt.ts). Both are generated from the same data as the main page.
 
 Reduced-motion users get the same content with no intro, no smooth scroll, and both rewrite sentences shown side by side. The game stays playable for them, with its background animation frozen.
