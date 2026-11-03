@@ -10,13 +10,13 @@
 // Picked by looking at a few; the same seed grows the same composition.
 const SEED = 23;
 
-// The page's own paper and ink, so the band reads as the same print as the
-// text and the canvas blends into the page with no visible edge.
+// The library's own blue ramp, on the page's paper so the canvas blends into
+// the page with no visible edge.
 const COLORS = {
   background: "#f7f7f5",
-  light: "#c2c2bd",
-  ink: "#2e2e2c",
-  dark: "#0e0e0e",
+  light: "#a9c5ef",
+  ink: "#3a6fd8",
+  dark: "#16295f",
 };
 
 function options(width: number) {
