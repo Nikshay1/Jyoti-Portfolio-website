@@ -3,7 +3,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { runIntro } from "./intro";
-import { initSpace } from "./space";
+import { initFlowers } from "./flowers";
 import { initName } from "./name";
 import { initRewrite } from "./rewrite";
 
@@ -29,8 +29,7 @@ initClock();
 initCopy();
 initAnchors();
 initPreview();
-initSpace();
-initBinGame();
+initFlowers();
 if (!reduced) {
   initReveals();
   initCounters();
@@ -169,21 +168,6 @@ function initCursor() {
   });
   document.addEventListener("pointerleave", () => dot.classList.add("gone"));
   document.addEventListener("pointerenter", () => dot.classList.remove("gone"));
-}
-
-// The game's code and room bake only load once the footer is close.
-function initBinGame() {
-  const root = document.querySelector<HTMLElement>("[data-bin]");
-  if (!root) return;
-  const near = new IntersectionObserver(
-    ([entry]) => {
-      if (!entry.isIntersecting) return;
-      near.disconnect();
-      void import("./bin/game").then((game) => game.startBinGame(root));
-    },
-    { rootMargin: "800px" },
-  );
-  near.observe(root);
 }
 
 function initClock() {

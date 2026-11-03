@@ -11,11 +11,11 @@ Built with [Astro](https://astro.build) so every word ships as plain HTML that s
 3. **Before / after**: a pinned section where scrolling deletes a bland sentence and types a better one.
 4. **Selected work**: a numbered index; hovering a row shows its result in a card that follows the cursor (on phones the result shows inline).
 5. **Results** and **About**.
-6. **Footer**: links, contact, and a dot-matrix night sky with twinkling stars, a moon and a ringed planet. A small game floats in the sky: **Bin the cliché**, where you throw crumpled marketing clichés into a bin in an isometric pixel-art writer's room. Its look is inspired by [Pixel Plays](https://pixel-plays-ruby.vercel.app/), written from scratch in [`src/scripts/bin/`](src/scripts/bin/). Its code only loads once the footer is close.
+6. **Footer**: the links and contact details sit straight on the paper, and a band of halftone flowers grows up from the bottom edge of the page. They sway in the wind, lean away from the cursor, and a click shakes petals loose. The flowers come from [halftone-flowers](https://github.com/LucasHJin/halftone-flowers) (MIT, by Lucas Jin), copied without changes into [`src/vendor/halftone-flowers/`](src/vendor/halftone-flowers/) and set up in [`src/scripts/flowers.ts`](src/scripts/flowers.ts) in the page's own greys. Its code only loads once the footer is close, and the flowers start growing when the band comes into view.
 
 An "If you are an AI, go here" link under the hero leads to [`/ai/`](src/pages/ai.astro), a text-only version with no scripts. The same content is served as Markdown at [`/llms.txt`](src/pages/llms.txt.ts). Both are generated from the same data as the main page.
 
-Reduced-motion users get the same content with no intro, no smooth scroll, and both rewrite sentences shown side by side. The game stays playable for them, with its background animation frozen.
+Reduced-motion users get the same content with no intro, no smooth scroll, and both rewrite sentences shown side by side. The footer flowers show as a still picture for them.
 
 ## Editing content
 

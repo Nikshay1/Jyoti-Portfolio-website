@@ -48,46 +48,6 @@ export const rewrite = {
     "I write the page people search for, and the one they actually finish reading.",
 };
 
-// The footer game. Every line is the kind of copy she'd rewrite.
-export const binGame = {
-  title: "Bin the cliché",
-  label:
-    "A small game: throw crumpled clichés into the bin. Pull back on the paper and let go, or use the arrow keys to aim and space to throw.",
-  first: "pull back on the paper, let go to throw",
-  aim: "pull back, let go",
-  fan: (level: number) => `fan on ${level}. it pushes the paper`,
-  clean: "clean in. 2 points",
-  offWall: "off the wall and in. 2 points",
-  rim: "in, just about. 1 point",
-  miss: "missed. that line is still on the floor",
-  desk: "back on the desk. it wants another draft",
-  shelf: "shelved for now. still a cliché",
-  cat: "the cat has notes",
-  space: "gone, out into the night",
-  final: (score: number, shots: number) =>
-    score === 0
-      ? "All ten clichés survived."
-      : `${score} points from ${shots} clichés.`,
-  hire: "Send me yours",
-  again: "play again",
-  lines: [
-    "In today's fast-paced digital world",
-    "Unlock the power of",
-    "Look no further",
-    "Take your business to the next level",
-    "We provide high-quality, SEO-optimized content solutions",
-    "A one-stop shop for all your needs",
-    "Let's dive in",
-    "At the end of the day",
-    "Elevate your brand",
-    "Game-changing, world-class, best-in-class",
-    "We are passionate about excellence",
-    "It's not just a product, it's a journey",
-    "Your trusted partner in success",
-    "Now more than ever",
-  ],
-};
-
 export type Work = {
   title: string;
   org: string;

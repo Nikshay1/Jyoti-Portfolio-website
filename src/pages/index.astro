@@ -4,7 +4,7 @@ import Base from "../layouts/Base.astro";
 import photo from "../assets/jyoti.jpg";
 import Intro from "../components/Intro.astro";
 import NameBar from "../components/NameBar.astro";
-import { about, binGame, hero, person, results, rewrite, work } from "../content/site";
+import { about, hero, person, results, rewrite, work } from "../content/site";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const wordCount = (s: string) => s.trim().split(/\s+/).length;
@@ -145,64 +145,41 @@ const wordCount = (s: string) => s.trim().split(/\s+/).length;
   </main>
 
     <footer id="contact" class="site-foot">
-      <div class="sf-panel">
-        <div class="sf-top">
-          <div class="sf-brand">
-            <a class="sf-logo" href="#top">jyoti chauhan</a>
-            <div class="sf-legal">
-              <p>© 2026 {person.name}</p>
-              <p>{person.city} — <span data-clock>IST</span></p>
-            </div>
-          </div>
-          <nav class="sf-col" aria-label="Site">
-            <p class="sf-label">Site</p>
-            <a href="#work">Selected work</a>
-            <a href="#results">Results</a>
-            <a href="#about">About</a>
-            <a href="#top">Back to top</a>
-          </nav>
-          <nav class="sf-col" aria-label="Elsewhere">
-            <p class="sf-label">Elsewhere</p>
-            <a href={`mailto:${person.email}`}>Email</a>
-            <a href="/ai/">Text version</a>
-            <a href="/llms.txt">llms.txt</a>
-            {person.resume && <a href={person.resume} download>Resume</a>}
-          </nav>
-          <div class="sf-hire">
-            <p class="sf-label">Work with me</p>
-            <p class="sf-pitch">Got a page that should rank? Let's write it together.</p>
-            <a class="sf-field" href={`mailto:${person.email}`} data-cursor>
-              <span>{person.email}</span><span class="sf-go" aria-hidden="true">&rarr;</span>
-            </a>
-            <p class="sf-note">
-              Blogs, website copy, landing pages or campaigns: write to me with what you need.{" "}
-              <button class="sf-copy" type="button" data-copy={person.email}>Copy address</button>
-            </p>
+      <div class="sf-top">
+        <div class="sf-brand">
+          <a class="sf-logo" href="#top">jyoti chauhan</a>
+          <div class="sf-legal">
+            <p>© 2026 {person.name}</p>
+            <p>{person.city} — <span data-clock>IST</span></p>
           </div>
         </div>
-        <div class="sf-sky" data-bin>
-          <canvas class="space" aria-hidden="true"></canvas>
-          <div class="bin-head">
-            <p class="sf-label">{binGame.title}</p>
-            <p class="bin-line"><span data-bin-line></span></p>
-          </div>
-          <div class="bin-tally">
-            <span class="bin-score" data-bin-score>0</span>
-            <span class="bin-left" data-bin-left></span>
-          </div>
-          <div class="bin-stage">
-            <canvas class="bin-canvas" data-bin-canvas tabindex="0" aria-label={binGame.label}></canvas>
-          </div>
-          <div class="bin-foot">
-            <p class="bin-status" data-bin-status role="status" aria-live="polite"></p>
-            <div class="bin-actions">
-              <a class="bin-hire" data-bin-hire hidden>{binGame.hire}</a>
-              <button class="bin-btn" data-bin-again type="button" hidden>{binGame.again}</button>
-              <button class="bin-btn" data-bin-mute type="button" aria-pressed="false">sound on</button>
-            </div>
-          </div>
+        <nav class="sf-col" aria-label="Site">
+          <p class="sf-label">Site</p>
+          <a href="#work">Selected work</a>
+          <a href="#results">Results</a>
+          <a href="#about">About</a>
+          <a href="#top">Back to top</a>
+        </nav>
+        <nav class="sf-col" aria-label="Elsewhere">
+          <p class="sf-label">Elsewhere</p>
+          <a href={`mailto:${person.email}`}>Email</a>
+          <a href="/ai/">Text version</a>
+          <a href="/llms.txt">llms.txt</a>
+          {person.resume && <a href={person.resume} download>Resume</a>}
+        </nav>
+        <div class="sf-hire">
+          <p class="sf-label">Work with me</p>
+          <p class="sf-pitch">Got a page that should rank? Let's write it together.</p>
+          <a class="sf-field" href={`mailto:${person.email}`} data-cursor>
+            <span>{person.email}</span><span class="sf-go" aria-hidden="true">&rarr;</span>
+          </a>
+          <p class="sf-note">
+            Blogs, website copy, landing pages or campaigns: write to me with what you need.{" "}
+            <button class="sf-copy" type="button" data-copy={person.email}>Copy address</button>
+          </p>
         </div>
       </div>
+      <div class="sf-flowers"><canvas aria-hidden="true"></canvas></div>
     </footer>
 
   <script>

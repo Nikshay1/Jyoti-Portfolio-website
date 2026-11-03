@@ -689,32 +689,32 @@ html:not(.js) .rw-static,
 
 /* ---------- footer ---------- */
 
+/* Sits straight on the paper. The links keep the page gutter; the flower
+   band below them runs to the left, right and bottom edges. */
 .site-foot {
-  padding: 0 var(--g) var(--g);
-}
-
-.sf-panel {
-  --line: rgba(247, 247, 245, 0.14);
-  --mute: rgba(247, 247, 245, 0.5);
-  overflow: hidden;
-  border-radius: 14px;
-  background: #121212;
-  color: var(--paper);
+  padding: 0;
 }
 
 .sf-top {
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr 1.7fr;
-  gap: var(--g);
-  padding: clamp(28px, 4vw, 56px);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--g);
+  margin-inline: var(--g);
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
 }
 
 .sf-brand {
+  grid-column: 1 / span 3;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 40px;
 }
+
+.sf-col:nth-of-type(1) { grid-column: 4 / span 2; }
+.sf-col:nth-of-type(2) { grid-column: 6 / span 2; }
+.sf-hire { grid-column: 8 / -1; }
 
 .sf-logo {
   font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
@@ -729,11 +729,9 @@ html:not(.js) .rw-static,
 }
 
 .sf-label {
-  margin-bottom: 18px;
-  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  margin-bottom: 14px;
   font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-weight: 500;
   color: var(--mute);
 }
 
@@ -744,6 +742,10 @@ html:not(.js) .rw-static,
   gap: 12px;
   font-size: clamp(17px, 1.5vw, 22px);
   letter-spacing: -0.015em;
+}
+
+.sf-col .sf-label {
+  margin-bottom: 2px;
 }
 
 .sf-col a,
@@ -783,19 +785,12 @@ html:not(.js) .rw-static,
   gap: 16px;
   margin-top: 28px;
   padding-bottom: 12px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--ink);
   font-size: clamp(16px, 1.4vw, 20px);
-  color: rgba(247, 247, 245, 0.6);
-  transition: color 0.4s var(--ease), border-color 0.4s var(--ease);
-}
-
-.sf-field:hover {
-  border-color: var(--paper);
-  color: var(--paper);
 }
 
 .sf-go {
-  transition: transform 0.5s var(--ease);
+  transition: transform 0.5s var(--ease), color 0.4s var(--ease);
 }
 
 .sf-field:hover .sf-go {
@@ -814,18 +809,22 @@ html:not(.js) .rw-static,
   padding: 0;
   border: 0;
   background: none;
-  color: var(--paper);
+  color: var(--ink);
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
 }
 
-.sf-sky {
+/* The canvas paints the paper colour itself, so the band blends into the
+   page. Nothing goes over it, and the flowers grow up from the page's
+   bottom edge. */
+.sf-flowers {
   position: relative;
-  height: clamp(500px, 44vw, 760px);
+  height: clamp(260px, 30vw, 460px);
+  margin-top: clamp(16px, 2vw, 32px);
 }
 
-.space {
+.sf-flowers canvas {
   position: absolute;
   inset: 0;
   display: block;
@@ -833,199 +832,8 @@ html:not(.js) .rw-static,
   height: 100%;
 }
 
-/* The footer game sits on the sky. Without scripts there's only the sky. */
-html:not(.js) .bin-head,
-html:not(.js) .bin-tally,
-html:not(.js) .bin-stage,
-html:not(.js) .bin-foot {
+html:not(.js) .sf-flowers {
   display: none;
-}
-
-.bin-stage {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.bin-canvas {
-  display: block;
-  image-rendering: pixelated;
-  touch-action: pan-y;
-  cursor: grab;
-  outline: none;
-}
-
-.bin-pulling .bin-canvas {
-  cursor: grabbing;
-}
-
-.bin-canvas:focus-visible {
-  outline: 1px dashed var(--mute);
-  outline-offset: 2px;
-}
-
-.bin-head {
-  position: absolute;
-  top: clamp(20px, 2.4vw, 32px);
-  left: clamp(28px, 4vw, 56px);
-  z-index: 1;
-  width: min(30vw, 400px);
-  pointer-events: none;
-}
-
-.bin-head .sf-label {
-  margin-bottom: 10px;
-}
-
-.bin-line {
-  min-height: 2.2em;
-  font-family: var(--serif);
-  font-size: clamp(24px, 2.4vw, 36px);
-  line-height: 1.1;
-  letter-spacing: -0.01em;
-}
-
-.bin-line span {
-  background: linear-gradient(var(--accent), var(--accent)) no-repeat 0 56% / 0 2px;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-  transition: background-size 0.5s var(--ease), color 0.5s var(--ease);
-}
-
-.bin-line span.struck {
-  background-size: 100% 2px;
-  color: var(--mute);
-}
-
-.bin-tally {
-  position: absolute;
-  top: clamp(20px, 2.4vw, 32px);
-  right: clamp(28px, 4vw, 56px);
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
-  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
-  pointer-events: none;
-}
-
-.bin-score {
-  font-size: clamp(24px, 2.4vw, 36px);
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-
-.bin-left {
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  color: var(--mute);
-}
-
-.bin-foot {
-  position: absolute;
-  right: clamp(28px, 4vw, 56px);
-  bottom: clamp(16px, 2vw, 24px);
-  left: clamp(28px, 4vw, 56px);
-  z-index: 1;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px 32px;
-  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--mute);
-  pointer-events: none;
-}
-
-.bin-status {
-  max-width: 26em;
-  color: var(--paper);
-}
-
-.bin-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 4px 20px;
-  pointer-events: auto;
-}
-
-.bin-actions [hidden] {
-  display: none;
-}
-
-.bin-btn,
-.bin-hire {
-  padding: 6px 0;
-  border: 0;
-  background: none;
-  color: var(--mute);
-  font: inherit;
-  cursor: pointer;
-  transition: color 0.3s var(--ease);
-}
-
-.bin-btn:hover {
-  color: var(--paper);
-}
-
-.bin-hire {
-  color: var(--paper);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.bin-over .bin-btn[data-bin-again] {
-  color: var(--paper);
-}
-
-@media (max-width: 860px) {
-  .sf-sky {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    height: auto;
-    padding: 20px 0;
-  }
-
-  .bin-head,
-  .bin-tally,
-  .bin-stage,
-  .bin-foot {
-    position: relative;
-    inset: auto;
-  }
-
-  .bin-head {
-    width: auto;
-    padding: 0 76px 0 clamp(16px, 4vw, 28px);
-  }
-
-  .bin-tally {
-    position: absolute;
-    top: 20px;
-    right: clamp(16px, 4vw, 28px);
-  }
-
-  .bin-stage {
-    width: 100%;
-    aspect-ratio: 340 / 236;
-  }
-
-  .bin-foot {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 0 clamp(16px, 4vw, 28px);
-  }
-
-  .bin-actions {
-    justify-content: flex-start;
-  }
 }
 
 /* ---------- search intro ---------- */
@@ -1308,15 +1116,22 @@ html.js:not(.skip-intro) body {
     row-gap: 48px;
   }
 
-  .sf-brand {
+  .sf-brand,
+  .sf-col:nth-of-type(1),
+  .sf-col:nth-of-type(2),
+  .sf-hire {
+    grid-column: auto;
+  }
+
+  .sf-brand,
+  .sf-hire {
     grid-column: 1 / -1;
+  }
+
+  .sf-brand {
     flex-direction: row;
     align-items: baseline;
     flex-wrap: wrap;
-  }
-
-  .sf-hire {
-    grid-column: 1 / -1;
   }
 }
 
