@@ -871,12 +871,14 @@ html.js:not(.skip-intro) body {
 /* 1. the browser bar */
 
 .op-pill {
-  font-size: min(18px, 2.9vw);
+  font-size: min(27px, 4.35vw);
+  will-change: transform;
   color: #33332f;
 }
 
 .pl {
   position: relative;
+  will-change: transform;
   display: flex;
   align-items: center;
   gap: 0.45em;
@@ -918,6 +920,11 @@ html.js:not(.skip-intro) body {
   white-space: nowrap;
 }
 
+.pl-ph span {
+  display: inline-block;
+  white-space: pre;
+}
+
 .pl-reload {
   margin-left: auto;
 }
@@ -931,10 +938,19 @@ html.js:not(.skip-intro) body {
   opacity: 0;
 }
 
+.pl-ch {
+  display: inline-block;
+  white-space: pre;
+  opacity: 0;
+}
+
 .pl-caret {
+  position: absolute;
+  top: 50%;
+  left: 0;
   width: 2px;
   height: 1.3em;
-  margin-left: 1px;
+  margin: -0.65em 0 0 1px;
   background: var(--ink);
 }
 
@@ -971,6 +987,7 @@ html.js:not(.skip-intro) body {
 }
 
 .b-img {
+  will-change: transform;
   position: absolute;
   inset: -4%;
   width: 108%;
@@ -978,6 +995,8 @@ html.js:not(.skip-intro) body {
   max-width: none;
   object-fit: cover;
   object-position: 50% 42%;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 2%, #000 16%, #000 72%, transparent 96%);
+  mask-image: linear-gradient(to bottom, transparent 2%, #000 16%, #000 72%, transparent 96%);
 }
 
 .b-veil {
@@ -1018,9 +1037,19 @@ html.js:not(.skip-intro) body {
   display: inline-block;
 }
 
+.b-ch {
+  display: inline-block;
+  white-space: pre;
+  opacity: 0;
+}
+
 .b-caret {
+  position: absolute;
+  top: 50%;
+  left: 2px;
   width: 1.5px;
   height: 1.15em;
+  margin-top: -0.575em;
   background: #fff;
 }
 
@@ -1033,33 +1062,48 @@ html.js:not(.skip-intro) body {
 
 /* 4. the question, 5. searching */
 
+/* Built at full zoom and scaled down, so the camera can push in and stay sharp.
+   Every part is placed by transform in intro.ts. */
 .op-q {
-  font-size: min(4.6vw, 54px);
+  --zoom-max: 2.4;
   overflow: hidden;
 }
 
 .q-cam {
+  position: relative;
+  width: 0;
+  height: 1.3em;
+  font-size: calc(min(4.6vw, 54px) * var(--zoom-max));
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.3;
+  white-space: pre;
   will-change: transform;
 }
 
-.q-line {
-  display: inline-flex;
-  align-items: center;
-  font-weight: 500;
-  letter-spacing: -0.03em;
-  white-space: pre;
+.q-lead,
+.q-slot,
+.q-end {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+}
+
+.q-ch {
+  display: inline-block;
+  opacity: 0;
 }
 
 .q-lead {
-  display: inline-block;
-  overflow: hidden;
+  --tint: 100%;
 }
 
-.q-slot {
-  position: relative;
-  display: inline-block;
-  height: 1.3em;
-  margin: 0 0.26em;
+.q-lead .q-ch {
+  color: transparent;
+  background: linear-gradient(to bottom, #0e0e0e 45%, #5d87c4 75%, #8fb0de) 0 var(--tint) / 100% 400%;
+  -webkit-background-clip: text;
+  background-clip: text;
 }
 
 .q-item {
@@ -1073,7 +1117,7 @@ html.js:not(.skip-intro) body {
   height: 1.3em;
   padding: 0 0.26em 0 0.14em;
   border-radius: 0.24em;
-  background: rgba(14, 14, 14, calc(var(--chip) * 0.07));
+  background: color-mix(in srgb, var(--tile) calc(var(--chip) * 11%), transparent);
   transform-origin: 0 50%;
 }
 
@@ -1106,13 +1150,11 @@ html.js:not(.skip-intro) body {
   display: none;
 }
 
-.q-end {
-  position: relative;
-  display: inline-block;
-}
-
 .q-tail {
+  --eat: 0;
   display: inline-block;
+  -webkit-mask-image: linear-gradient(90deg, transparent calc(var(--eat) * 130% - 30%), #000 calc(var(--eat) * 130%));
+  mask-image: linear-gradient(90deg, transparent calc(var(--eat) * 130% - 30%), #000 calc(var(--eat) * 130%));
 }
 
 .q-find {
@@ -1120,11 +1162,10 @@ html.js:not(.skip-intro) body {
   top: 50%;
   left: 0;
   width: 0;
-  height: 2.5px;
-  transform: translateY(-50%);
+  height: 0.06em;
   background: #2c8bff;
-  border-radius: 2px;
-  box-shadow: 0 0 0 1.5px rgba(44, 139, 255, 0.85), 0 0 22px 3px rgba(90, 170, 255, 0.55);
+  border-radius: 0.04em;
+  box-shadow: 0 0 0 0.04em rgba(44, 139, 255, 0.85), 0 0 0.5em 0.08em rgba(90, 170, 255, 0.55);
   overflow: hidden;
   color: #1c6fd0;
   opacity: 0;
@@ -1139,6 +1180,12 @@ html.js:not(.skip-intro) body {
   opacity: 0;
 }
 
+.q-find-t {
+  --rev: 0;
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(var(--rev) * 135% - 35%), transparent calc(var(--rev) * 135%));
+  mask-image: linear-gradient(90deg, #000 calc(var(--rev) * 135% - 35%), transparent calc(var(--rev) * 135%));
+}
+
 .q-spin {
   width: 0.62em;
   height: 0.62em;
@@ -1150,6 +1197,7 @@ html.js:not(.skip-intro) body {
 /* 6. the proof posters */
 
 .op-cards {
+  will-change: transform;
   --cw: min(60vmin, 380px);
 }
 
@@ -1160,6 +1208,7 @@ html.js:not(.skip-intro) body {
   width: var(--cw);
   margin: calc(var(--cw) * -0.5) 0 0 calc(var(--cw) * -0.5);
   opacity: 0;
+  will-change: transform, filter, opacity;
 }
 
 .pc-tag {
@@ -1278,6 +1327,7 @@ html.js:not(.skip-intro) body {
 }
 
 .e-line {
+  will-change: transform;
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -1292,21 +1342,30 @@ html.js:not(.skip-intro) body {
 }
 
 .e-face {
-  --glow: 0;
-  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left: 100%;
   width: 1.05em;
   height: 1.05em;
-  overflow: visible;
+  margin: -0.525em 0 0 0.28em;
 }
 
 .e-face img {
+  position: relative;
   display: block;
-  width: 1.05em;
-  height: 1.05em;
+  width: 100%;
+  height: 100%;
   max-width: none;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 0 calc(var(--glow) * 34px) calc(var(--glow) * 6px) rgba(255, 244, 228, 0.32);
+}
+
+.e-halo {
+  position: absolute;
+  inset: -1.6em;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 240, 220, 0.4), rgba(255, 240, 220, 0.1) 40%, transparent 68%);
+  opacity: 0;
 }
 
 .intro-skip {

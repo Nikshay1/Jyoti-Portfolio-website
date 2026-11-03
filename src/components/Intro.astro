@@ -21,8 +21,8 @@ const { question } = intro;
       </span>
       <span class="pl-bar pl-in">
         <svg class="pl-tabs" viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="3" width="11" height="6.5" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3"></rect><path d="M4 12.5h8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
-        <span class="pl-ph">{intro.placeholder}</span>
-        <span class="pl-input"><span class="pl-typed" data-text={intro.typed}></span><i class="pl-caret"></i></span>
+        <span class="pl-ph">{chars(intro.placeholder).map((c) => <span>{c}</span>)}</span>
+        <span class="pl-input">{chars(intro.typed).map((c) => <span class="pl-ch">{c}</span>)}<i class="pl-caret"></i></span>
         <svg class="pl-reload" viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8a5 5 0 1 1-1.6-3.7M13 2v3h-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
       </span>
       <span class="pl-btn pl-in">
@@ -50,7 +50,6 @@ const { question } = intro;
 
   <div class="op op-q">
     <div class="q-cam">
-      <div class="q-line">
         <span class="q-lead">{chars(question.before).map((c) => <span class="q-ch">{c}</span>)}</span>
         <span class="q-slot is-plain">
           {question.formats.map((f, i) => (
@@ -66,7 +65,6 @@ const { question } = intro;
           <span class="q-tail">{chars(question.after).map((c) => <span class="q-ch">{c}</span>)}</span>
           <span class="q-find"><span class="q-find-in"><i class="q-spin"></i><span class="q-find-t">{intro.searching}</span></span></span>
         </span>
-      </div>
     </div>
   </div>
 
@@ -94,7 +92,7 @@ const { question } = intro;
     <i class="e-fall"></i>
     <p class="e-line">
       <span class="e-word">{intro.closer}</span>
-      <span class="e-face"><img src={avatar.src} width={avatar.width} height={avatar.height} alt="" decoding="async" /></span>
+      <span class="e-face"><i class="e-halo"></i><img src={avatar.src} width={avatar.width} height={avatar.height} alt="" decoding="async" /></span>
     </p>
   </div>
 
