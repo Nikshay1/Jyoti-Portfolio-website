@@ -11,7 +11,7 @@ import { gsap } from "gsap";
 //   5. The end of the question is eaten by a blue line that opens into
 //      "Searching...".
 //   6. Her results arrive as a stack of posters.
-//   7. Black falls over the page, "Hire Jyoti" and her face. Then the site.
+//   7. Black falls over the page, "hi, i'm jyoti" and her face. Then the site.
 //
 // Two habits make it feel filmed rather than animated. Nothing ever fully
 // stops: every scene carries a slow drift under its fast moves. And nothing

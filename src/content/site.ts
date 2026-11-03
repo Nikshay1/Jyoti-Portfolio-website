@@ -76,7 +76,7 @@ export const intro = {
       motif: "arrow",
     },
   ],
-  closer: "Hire Jyoti",
+  closer: "hi, i'm jyoti",
 };
 
 export const hero = {
