@@ -33,7 +33,7 @@ export const intro = {
   placeholder: "Search...",
   typed: "writing",
   tagline: "Writing That Gets Found",
-  ask: "Ask AI",
+  ask: "Looking for a writer?",
   question: {
     before: "who can write a",
     // The wheel rolls down to the second-to-last of these.
@@ -76,7 +76,7 @@ export const intro = {
       motif: "arrow",
     },
   ],
-  closer: "hi, i'm jyoti",
+  closer: "Hi, I'm Jyoti",
 };
 
 export const hero = {

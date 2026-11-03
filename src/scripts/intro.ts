@@ -5,13 +5,13 @@ import { gsap } from "gsap";
 //      into the bar as the caret and types.
 //   2. The bar becomes a glass strip over a blurred photo of Jyoti, with the
 //      tagline.
-//   3. The photo shrinks into an "Ask AI" chip.
+//   3. The photo shrinks into a chip asking "Looking for a writer?".
 //   4. A question types itself with the camera following, then pulls back to
 //      show a wheel of page types.
 //   5. The end of the question is eaten by a blue line that opens into
 //      "Searching...".
 //   6. Her results arrive as a stack of posters.
-//   7. Black falls over the page, "hi, i'm jyoti" and her face. Then the site.
+//   7. Black falls over the page, "Hi, I'm Jyoti" and her face. Then the site.
 //
 // Two habits make it feel filmed rather than animated. Nothing ever fully
 // stops: every scene carries a slow drift under its fast moves. And nothing
@@ -44,11 +44,11 @@ export function runIntro(onDone: () => void) {
   const tl = gsap.timeline({ delay: 0.25, onUpdate: q.render });
   tl.add(pillScene(el), 0)
     .add(bandScene(el), 2.75)
-    .add(questionScene(q), 4.85)
-    .add(searchScene(el, q), 7.42)
-    .add(cardsScene(el, q), 8.5)
-    .add(endScene(el), 10.3)
-    .add(wipe, 12.25);
+    .add(questionScene(q), 5.31)
+    .add(searchScene(el, q), 7.88)
+    .add(cardsScene(el, q), 8.96)
+    .add(endScene(el), 10.76)
+    .add(wipe, 12.71);
 
   function wipe() {
     gsap.to(".e-line", { opacity: 0, filter: "blur(8px)", duration: 0.34, ease: "power2.in" });
@@ -207,6 +207,18 @@ function bandScene(el: HTMLElement) {
   const H = innerHeight;
   const rect = (w: number, h: number) => `inset(${(H - h) / 2}px ${(W - w) / 2}px)`;
   const card = Math.min(240, W * 0.5);
+  // However small the photo gets and however far it has turned, it must still
+  // fill the card, or its edge shows. Its top and bottom are feathered, so
+  // only the middle 55% of its height counts.
+  const photo = el.querySelector<HTMLElement>(".b-img")!;
+  const fill = (scale: number, deg: number, w: number, h: number) => {
+    const a = (Math.abs(deg) * Math.PI) / 180;
+    return Math.max(
+      scale,
+      (w * Math.cos(a) + h * Math.sin(a) + 8) / photo.offsetWidth,
+      (w * Math.sin(a) + h * Math.cos(a) + 8) / (photo.offsetHeight * 0.55),
+    );
+  };
 
   const t = gsap.timeline();
   t.set(scene, { opacity: 1 })
@@ -233,19 +245,19 @@ function bandScene(el: HTMLElement) {
     .to(".b-word", { x: (i: number) => i * u * 0.32, duration: 0.56, ease: "sine.in" }, 0.6)
     .to(".b-word", { opacity: 0, filter: "blur(6px)", duration: 0.22, stagger: { each: 0.06, from: "end" }, ease: "power2.in" }, 0.84)
     .to(".b-strip", { opacity: 0, duration: 0.16 }, 1.14)
-    // Everything pulls back to a card holding "Ask AI"...
+    // Everything pulls back to a card holding the prompt...
     .to(".b-clip", { clipPath: rect(card, card * 0.4), duration: 0.5, ease: "power4.inOut" }, 0.96)
-    .to(".b-img", { scale: 0.56, rotate: 7, duration: 0.54, ease: "power4.inOut" }, 0.96)
+    .to(".b-img", { scale: fill(0.56, 7, card, card * 0.4), rotate: 7, duration: 0.54, ease: "power4.inOut" }, 0.96)
     .to(".b-veil", { opacity: 0.42, duration: 0.36, ease: "power2.inOut" }, 1.1)
     .fromTo(".b-ask", { opacity: 0, scale: 1.1, filter: "blur(7px)" }, { opacity: 1, scale: 1, filter: SHARP, duration: 0.36, ease: "power3.out" }, 1.26)
     // ...which keeps shrinking, slowly, then quickly, down to a chip of glass.
-    .to(".b-clip", { clipPath: rect(card * 0.72, card * 0.29), duration: 0.34, ease: "none" }, 1.4)
-    .to(".b-img", { scale: 0.42, rotate: -4, duration: 0.34, ease: "none" }, 1.4)
-    .to(".b-ask", { opacity: 0, scale: 0.86, filter: "blur(5px)", duration: 0.18, ease: "power2.in" }, 1.6)
-    .to(".b-clip", { clipPath: rect(card * 0.34, card * 0.15), duration: 0.2, ease: "power3.inOut" }, 1.74)
-    .to(".b-img", { scale: 0.28, rotate: -22, duration: 0.3, ease: "power3.out" }, 1.74)
-    .to(".b-clip", { clipPath: rect(card * 0.26, card * 0.12), duration: 0.14, ease: "none" }, 1.94)
-    .to(scene, { opacity: 0, filter: "blur(5px)", duration: 0.1 }, 2.03)
+    .to(".b-clip", { clipPath: rect(card * 0.8, card * 0.32), duration: 0.8, ease: "none" }, 1.4)
+    .to(".b-img", { scale: fill(0.42, 4, card, card * 0.4), rotate: -4, duration: 0.8, ease: "none" }, 1.4)
+    .to(".b-ask", { opacity: 0, scale: 0.86, filter: "blur(5px)", duration: 0.18, ease: "power2.in" }, 2.06)
+    .to(".b-clip", { clipPath: rect(card * 0.34, card * 0.15), duration: 0.2, ease: "power3.inOut" }, 2.2)
+    .to(".b-img", { scale: fill(0.28, 22, card * 0.8, card * 0.32), rotate: -22, duration: 0.3, ease: "power3.out" }, 2.2)
+    .to(".b-clip", { clipPath: rect(card * 0.26, card * 0.12), duration: 0.14, ease: "none" }, 2.4)
+    .to(scene, { opacity: 0, filter: "blur(5px)", duration: 0.1 }, 2.49)
     .set(scene, { display: "none" });
   return t;
 }

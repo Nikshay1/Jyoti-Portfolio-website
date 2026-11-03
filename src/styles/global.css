@@ -972,7 +972,7 @@ html.js:not(.skip-intro) body {
   background: linear-gradient(90deg, #1b2dff, #b12bff, #18d3ff, #1b2dff) 0 0 / 200% 100%;
 }
 
-/* 2. strip and photo, 3. "Ask AI" */
+/* 2. strip and photo, 3. the prompt card */
 
 .op-band {
   color: #fff;
@@ -1055,6 +1055,7 @@ html.js:not(.skip-intro) body {
 
 .b-ask {
   position: relative;
+  white-space: nowrap;
   font-size: clamp(15px, 1.5vw, 19px);
   font-weight: 500;
   opacity: 0;
