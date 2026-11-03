@@ -10,6 +10,9 @@
 // Picked by looking at a few; the same seed grows the same composition.
 const SEED = 23;
 
+// Just after the 1.5s grow-in.
+const FIRST_BUTTERFLY_MS = 2000;
+
 // The library's own blue ramp, on the page's paper so the canvas blends into
 // the page with no visible edge.
 const COLORS = {
@@ -35,10 +38,9 @@ function options(width: number) {
         bouquet: { reach: [0.6, 0.8] as [number, number] },
         meadow: { height: [0.42, 0.18] as [number, number] },
       },
-      // No butterflies or bees, no pointer trail. Stems still lean away from
-      // the cursor, and a click still shakes petals off.
-      insects: { enabled: false },
-      trail: { enabled: false },
+      // Mostly butterflies, a few bees. The cursor tail needs no setting: it
+      // is drawn on this canvas, so it can't appear anywhere else on the page.
+      insects: { every: 10, most: 2, odds: [3, 1] as [number, number] },
     },
   };
 }
@@ -59,7 +61,9 @@ export function initFlowers() {
           if (!e.isIntersecting) return;
           seen.disconnect();
           void engine.then(({ FlowerEngine, FieldEmitter }) => {
-            new FlowerEngine(canvas, options(band.clientWidth), new FieldEmitter());
+            const field = new FlowerEngine(canvas, options(band.clientWidth), new FieldEmitter());
+            // Don't make the first visitor wait for a random arrival.
+            setTimeout(() => field.release("butterfly"), FIRST_BUTTERFLY_MS);
           });
         },
         { threshold: 0.2 },
