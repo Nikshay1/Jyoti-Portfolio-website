@@ -27,13 +27,56 @@ export const seo = {
     "Jyoti Chauhan is a Delhi-based content writer. She writes SEO blogs, website copy, course pages and landing pages that rank on Google and show up in AI answers.",
 };
 
+// The opening film, in the order it plays. The proof cards repeat results
+// from `work` and `results` below, so keep them in step.
 export const intro = {
-  query: "content writer who actually ranks",
-  overview:
-    "Jyoti Chauhan is a content writer based in Delhi. She writes SEO blogs, website copy and landing pages. One of her course pages ranks #2 on Google, and one of her blogs was the top answer in Google's AI Mode.",
-  resultTitle: "Jyoti Chauhan: Content Writer for SEO, Web & Marketing",
-  resultSnippet:
-    "SEO blogs, website copy and landing pages that get found, get read, and get clicks. Based in Delhi.",
+  placeholder: "Search...",
+  typed: "writing",
+  tagline: "Writing That Gets Found",
+  ask: "Ask AI",
+  question: {
+    before: "who can write a",
+    // The wheel rolls down to the second-to-last of these.
+    formats: [
+      { label: "Blog", tile: "Bl", tone: "blue" },
+      { label: "Website", tile: "Wb", tone: "violet" },
+      { label: "Landing page", tile: "Lp", tone: "ink" },
+      { label: "Course page", tile: "Cp", tone: "rose" },
+    ],
+    after: "that ranks?",
+  },
+  searching: "Searching...",
+  proof: [
+    {
+      tag: "Palmistry course page",
+      figure: "#2",
+      line: "on Google for “palmistry course”",
+      tone: "lime",
+      motif: "serp",
+    },
+    {
+      tag: "Love & Marriage astrology blog",
+      figure: "#1",
+      line: "in Google's AI Mode",
+      tone: "tomato",
+      motif: "spark",
+    },
+    {
+      tag: "Institute website",
+      figure: "63K",
+      line: "impressions in 16 days",
+      tone: "cobalt",
+      motif: "dots",
+    },
+    {
+      tag: "Webinar landing pages",
+      figure: "40–50%",
+      line: "lower cost per purchase",
+      tone: "butter",
+      motif: "arrow",
+    },
+  ],
+  closer: "Hire Jyoti",
 };
 
 export const hero = {
