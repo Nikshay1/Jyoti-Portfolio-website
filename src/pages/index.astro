@@ -7,6 +7,7 @@ import NameBar from "../components/NameBar.astro";
 import { about, headings, hero, person, results, rewrite, work } from "../content/site";
 
 const pad = (n: number) => String(n).padStart(2, "0");
+const figureSize = (s: string) => (s.length <= 3 ? "xl" : s.length <= 4 ? "lg" : s.length <= 6 ? "md" : "words");
 ---
 
 <Base>
@@ -21,8 +22,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
       <div class="meta grid">
         <p class="c-3" data-hero>{person.role}</p>
         <p class="c-3" data-hero>{person.focus}</p>
-        <p class="c-3" data-hero>{person.city} <span class="mute">— <span data-clock>IST</span></span></p>
-        <p class="c-3 right" data-hero><span class="dot"></span>{person.availability}</p>
+        <p class="c-6 right" data-hero>{person.city} <span class="mute">— <span data-clock>IST</span></span></p>
       </div>
       <p class="big statement" data-goo="hero">
         {hero.lines.map((l) => <span class="ln" style={`--i:${l.step}`}>{l.text} </span>)}
@@ -61,6 +61,11 @@ const pad = (n: number) => String(n).padStart(2, "0");
               <span class="ix-note">{w.note}</span>
               <span class="ix-result">{w.result}</span>
               <span class="ix-year">{w.year}</span>
+              <span class="ix-poster" data-tone={w.poster.tone} aria-hidden="true">
+                <span class="ix-poster-top"><span>{w.type}</span><span>{pad(i + 1)}</span></span>
+                <span class="ix-poster-fig" data-size={figureSize(w.poster.figure)}>{w.poster.figure}</span>
+                <span class="ix-poster-line">{w.poster.line}</span>
+              </span>
             </Tag>
           );
         })}
@@ -92,7 +97,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
             alt={`Portrait of ${person.name}`}
             formats={["avif", "webp"]}
             widths={[400, 700, 941]}
-            sizes="(max-width: 860px) 420px, 25vw"
+            sizes="(max-width: 860px) 320px, 40vw"
             loading="lazy"
           />
         </figure>

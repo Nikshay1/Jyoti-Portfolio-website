@@ -232,21 +232,6 @@ main {
   border-top: 1px solid var(--line);
 }
 
-.dot {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  margin-right: 8px;
-  border-radius: 50%;
-  background: var(--accent);
-  vertical-align: 1px;
-  animation: pulse 2.4s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  50% { opacity: 0.25; }
-}
-
 /* The big type. Lines are set by hand and hang in by whole columns. */
 .big {
   font-size: clamp(29px, 6.6vw, 112px);
@@ -388,6 +373,7 @@ html:not(.js) .rw-state {
 }
 
 .ix-row {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--g);
@@ -442,10 +428,84 @@ html:not(.js) .rw-state {
   vertical-align: 0.4em;
 }
 
+/* A poster for each row. It covers only the note column, and repeats the
+   note's point, so the row's other text stays readable. Hover only: touch
+   screens have no hover, and the row already says all of this. */
+.ix-poster {
+  display: none;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .ix:has(.ix-row:hover) .ix-row:not(:hover) {
     opacity: 0.3;
   }
+
+  .ix-poster {
+    --pw: clamp(220px, 19vw, 300px);
+    position: absolute;
+    top: 0;
+    left: calc((100% + var(--g)) / 12 * 5);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: var(--pw);
+    aspect-ratio: 3 / 4;
+    padding: calc(var(--pw) * 0.055);
+    overflow: hidden;
+    color: var(--fg);
+    background: var(--bg);
+    pointer-events: none;
+    clip-path: inset(100% 0 0 0);
+  }
+
+  .ix-poster::before {
+    content: "";
+    position: absolute;
+    inset: calc(var(--pw) * 0.17) 0 0;
+    color: var(--mark);
+    background: radial-gradient(circle, currentColor 32%, transparent 34%) 0 0 / calc(var(--pw) * 0.045) calc(var(--pw) * 0.045);
+    -webkit-mask-image: linear-gradient(200deg, #000 4%, transparent 52%);
+    mask-image: linear-gradient(200deg, #000 4%, transparent 52%);
+  }
+
+  .ix-poster > * {
+    position: relative;
+  }
+}
+
+.ix-poster[data-tone="cobalt"] { --bg: #1b3fd6; --fg: #f5f2ff; --mark: #6ed1ff; }
+.ix-poster[data-tone="lime"] { --bg: #b9ef4a; --fg: #0f1d0a; --mark: #0f1d0a; }
+.ix-poster[data-tone="tomato"] { --bg: #ff4f1a; --fg: #fff3df; --mark: #ffd447; }
+.ix-poster[data-tone="butter"] { --bg: #ffd447; --fg: #1a1408; --mark: #e0344c; }
+.ix-poster[data-tone="ink"] { --bg: #0e0e0e; --fg: #f7f7f5; --mark: #ff4f1a; }
+.ix-poster[data-tone="rose"] { --bg: #ffb3c7; --fg: #2a0b16; --mark: #d81b60; }
+.ix-poster[data-tone="violet"] { --bg: #5b2be0; --fg: #f6f1ff; --mark: #ffb3c7; }
+
+.ix-poster-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ix-poster-fig {
+  margin-top: auto;
+  font-weight: 700;
+  line-height: 0.88;
+  letter-spacing: -0.06em;
+}
+
+.ix-poster-fig[data-size="xl"] { font-size: calc(var(--pw) * 0.5); }
+.ix-poster-fig[data-size="lg"] { font-size: calc(var(--pw) * 0.39); }
+.ix-poster-fig[data-size="md"] { font-size: calc(var(--pw) * 0.25); }
+.ix-poster-fig[data-size="words"] { font-size: calc(var(--pw) * 0.155); line-height: 0.95; letter-spacing: -0.05em; }
+
+.ix-poster-line {
+  margin-top: 0.8em;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
 }
 
 /* ---------- results ---------- */
@@ -499,13 +559,17 @@ html:not(.js) .rw-state {
   letter-spacing: -0.045em;
 }
 
+/* The photo takes as much room as a laptop screen can show whole, and the
+   text takes all the rest, so there's no dead gap between them. */
 .about-grid {
+  --photo: min(44%, calc((100svh - var(--g) - 104px) * 941 / 1466));
+  grid-template-columns: var(--photo) minmax(0, 1fr);
+  column-gap: clamp(40px, 6vw, 110px);
   align-items: start;
   margin-top: clamp(72px, 9vw, 140px);
 }
 
 .photo {
-  grid-column: span 3;
   position: sticky;
   top: calc(var(--g) + 72px);
   /* Same shape as the photo itself, so nothing is cropped. */
@@ -535,10 +599,6 @@ html:not(.js) .rw-state {
   .photo img {
     filter: none;
   }
-}
-
-.about-text {
-  grid-column: 6 / -1;
 }
 
 .about-p {
@@ -1388,16 +1448,15 @@ html.js:not(.skip-intro) body {
     padding: 0;
   }
 
+  .about-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .photo {
-    grid-column: 1 / -1;
     position: relative;
     top: 0;
     max-width: 320px;
     margin-bottom: 48px;
-  }
-
-  .about-text {
-    grid-column: 1 / -1;
   }
 
   .about-cols {

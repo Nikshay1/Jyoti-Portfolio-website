@@ -120,6 +120,7 @@ export type Work = {
   year: string;
   result: string;
   note: string;
+  poster: { figure: string; line: string; tone: string };
   href?: string;
 };
 
@@ -133,6 +134,7 @@ export const work: Work[] = [
     year: "2026",
     result: "63K impressions in 16 days",
     note: "Wrote every page of the site. Clicks grew about 10% month on month.",
+    poster: { figure: "63K", line: "impressions in 16 days", tone: "cobalt" },
   },
   {
     title: "Palmistry course page",
@@ -141,6 +143,7 @@ export const work: Work[] = [
     year: "2026",
     result: "#2 on Google",
     note: "Ranks second on Google for “palmistry course”.",
+    poster: { figure: "#2", line: "on Google for “palmistry course”", tone: "lime" },
   },
   {
     title: "Love & Marriage astrology blog",
@@ -149,6 +152,7 @@ export const work: Work[] = [
     year: "2026",
     result: "#1 in AI Mode",
     note: "The top answer in Google's AI Mode for its topic.",
+    poster: { figure: "#1", line: "in Google's AI Mode", tone: "tomato" },
   },
   {
     title: "Astrology & graphology webinars",
@@ -157,6 +161,7 @@ export const work: Work[] = [
     year: "2026",
     result: "40–50% lower cost per purchase",
     note: "Rewrote the webinar landing pages that sell the seats.",
+    poster: { figure: "40–50%", line: "lower cost per purchase", tone: "butter" },
   },
   {
     title: "SEO blogs & articles",
@@ -165,6 +170,7 @@ export const work: Work[] = [
     year: "2026",
     result: "83K+ impressions",
     note: "780+ clicks across astrology, numerology, palmistry and Reiki.",
+    poster: { figure: "83K+", line: "impressions and 780+ clicks", tone: "ink" },
   },
   {
     title: "Email & WhatsApp campaigns",
@@ -173,6 +179,7 @@ export const work: Work[] = [
     year: "2026",
     result: "Webinars, courses, community",
     note: "Emails, WhatsApp messages and community posts for launches.",
+    poster: { figure: "Webinars, courses, community", line: "Emails, WhatsApp messages and community posts.", tone: "rose" },
   },
   {
     title: "Real estate blogs & social",
@@ -181,6 +188,7 @@ export const work: Work[] = [
     year: "2025–26",
     result: "Blogs, reels, LinkedIn",
     note: "Blogs, website copy, Instagram reels and LinkedIn posts.",
+    poster: { figure: "Blogs, reels, LinkedIn", line: "Blogs, website copy, Instagram reels and LinkedIn posts.", tone: "violet" },
   },
 ];
 

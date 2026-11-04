@@ -6,6 +6,7 @@ import { runIntro } from "./intro";
 import { initFlowers } from "./flowers";
 import { initName } from "./name";
 import { initGoo, playGoo } from "./goo";
+import { initPosters } from "./posters";
 import { initRewrite } from "./rewrite";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -33,6 +34,7 @@ initClock();
 initCopy();
 initAnchors();
 initFlowers();
+if (finePointer) initPosters(reduced);
 if (!reduced) {
   initGoo();
   initFades();
