@@ -82,6 +82,28 @@ export const intro = {
 export const hero = {
   lead: "I write pages that get found on Google and show up in AI answers,",
   accent: "and still sound like a person wrote them.",
+  // The same sentence, set by hand. `step` is how many columns a line hangs
+  // in from the left.
+  lines: [
+    { text: "I write pages that", step: 0 },
+    { text: "get found on Google", step: 2 },
+    { text: "and show up in AI answers,", step: 0 },
+    { text: "and still sound like", step: 3 },
+    { text: "a person wrote them.", step: 1 },
+  ],
+};
+
+export const headings = {
+  work: [
+    { text: "Pages and", step: 0 },
+    { text: "campaigns,", step: 2 },
+    { text: "and what", step: 1 },
+    { text: "they did.", step: 4 },
+  ],
+  results: [
+    { text: "Numbers,", step: 3 },
+    { text: "not adjectives.", step: 1 },
+  ],
 };
 
 export const rewrite = {
@@ -163,12 +185,12 @@ export const work: Work[] = [
 ];
 
 export const results = [
-  { count: 83, prefix: "", suffix: "K+", label: "impressions from SEO content I wrote" },
-  { count: 780, prefix: "", suffix: "+", label: "clicks from that same content" },
-  { count: 2, prefix: "#", suffix: "", label: "on Google for “palmistry course”" },
-  { count: 1, prefix: "#", suffix: "", label: "in Google AI Mode for an astrology blog" },
-  { count: null, prefix: "40–50", suffix: "%", label: "lower cost per purchase on webinar pages" },
-  { count: 150, prefix: "", suffix: "+", label: "students I taught spoken English" },
+  { value: "83K+", step: 0, label: "impressions from SEO content I wrote" },
+  { value: "780+", step: 2, label: "clicks from that same content" },
+  { value: "#2", step: 1, label: "on Google for “palmistry course”" },
+  { value: "#1", step: 3, label: "in Google AI Mode for an astrology blog" },
+  { value: "40–50%", step: 0, label: "lower cost per purchase on webinar pages" },
+  { value: "150+", step: 2, label: "students I taught spoken English" },
 ];
 
 export const about = {

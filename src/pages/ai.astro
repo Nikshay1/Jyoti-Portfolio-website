@@ -59,7 +59,7 @@ import { about, hero, person, results, rewrite, seo, work } from "../content/sit
 
       <h2>Results</h2>
       <ul>
-        {results.map((r) => <li>{r.prefix}{r.count ?? ""}{r.suffix} {r.label}</li>)}
+        {results.map((r) => <li>{r.value} {r.label}</li>)}
       </ul>
 
       <h2>About</h2>

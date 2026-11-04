@@ -34,7 +34,7 @@ export function portfolioMarkdown(siteUrl: string) {
   add("");
 
   add("## Results", "");
-  for (const r of results) add(`- ${r.prefix}${r.count ?? ""}${r.suffix} ${r.label}`);
+  for (const r of results) add(`- ${r.value} ${r.label}`);
   add("");
 
   add("## About", "", ...about.paragraphs.flatMap((p) => [p, ""]));

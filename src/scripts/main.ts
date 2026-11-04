@@ -5,6 +5,7 @@ import { SplitText } from "gsap/SplitText";
 import { runIntro } from "./intro";
 import { initFlowers } from "./flowers";
 import { initName } from "./name";
+import { initGoo, playGoo } from "./goo";
 import { initRewrite } from "./rewrite";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -14,7 +15,10 @@ const finePointer = matchMedia("(hover: hover) and (pointer: fine)").matches;
 
 let lenis: Lenis | null = null;
 if (!reduced) {
-  lenis = new Lenis({ lerp: 0.1 });
+  lenis = new Lenis({
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+  });
   lenis.on("scroll", ScrollTrigger.update);
   gsap.ticker.add((t) => lenis!.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
@@ -28,11 +32,10 @@ initRewrite(!reduced);
 initClock();
 initCopy();
 initAnchors();
-initPreview();
 initFlowers();
 if (!reduced) {
-  initReveals();
-  initCounters();
+  initGoo();
+  initFades();
   initPhoto();
   if (finePointer) initCursor();
 }
@@ -53,33 +56,19 @@ function playHero() {
     stagger: 0.07,
     ease: "expo.out",
   });
-  const lead = document.querySelector<HTMLElement>("[data-hero-lines]");
-  if (lead) {
-    const split = SplitText.create(lead, { type: "lines", mask: "lines", linesClass: "line" });
-    tl.from(split.lines, { yPercent: 105, duration: 1.2, stagger: 0.08, ease: "expo.out" }, 0.25);
-  }
+  playGoo(document.querySelector<HTMLElement>("[data-goo=hero]"), 0.25);
   tl.from("[data-hero]", { opacity: 0, y: 14, duration: 1, stagger: 0.06, ease: "expo.out" }, 0.4);
 }
 
-function initReveals() {
-  gsap.utils.toArray<HTMLElement>("[data-lines]").forEach((el) => {
-    const split = SplitText.create(el, { type: "lines", mask: "lines", linesClass: "line" });
-    gsap.from(split.lines, {
-      yPercent: 105,
-      duration: 1.2,
-      stagger: 0.08,
-      ease: "expo.out",
-      scrollTrigger: { trigger: el, start: "top 88%" },
-    });
-  });
-
-  gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) => {
+// Small text would turn to mush in the ink effect, so it just comes into focus.
+function initFades() {
+  gsap.utils.toArray<HTMLElement>("[data-fade]").forEach((el) => {
     gsap.from(el, {
       opacity: 0,
-      y: 36,
-      duration: 1.1,
-      ease: "expo.out",
-      clearProps: "opacity,transform",
+      filter: "blur(10px)",
+      duration: 1.2,
+      ease: "power2.out",
+      clearProps: "opacity,filter",
       scrollTrigger: { trigger: el, start: "top 92%" },
     });
   });
@@ -94,53 +83,6 @@ function initPhoto() {
     "--zoom": 1,
     ease: "none",
     scrollTrigger: { trigger: ".photo", start: "top bottom", end: "top 25%", scrub: true },
-  });
-}
-
-function initCounters() {
-  document.querySelectorAll<HTMLElement>("[data-count]").forEach((el) => {
-    const end = Number(el.dataset.count);
-    const n = { v: 0 };
-    el.textContent = "0";
-    gsap.to(n, {
-      v: end,
-      duration: 1.8,
-      ease: "expo.out",
-      scrollTrigger: { trigger: el, start: "top 90%" },
-      onUpdate: () => (el.textContent = String(Math.round(n.v))),
-    });
-  });
-}
-
-
-// The dark card that follows the cursor over the work list.
-function initPreview() {
-  const preview = document.querySelector<HTMLElement>(".preview");
-  const rows = document.querySelectorAll<HTMLElement>(".row:not(.row-head)");
-  if (!preview || !finePointer) return;
-
-  let x = innerWidth / 2;
-  let y = innerHeight / 2;
-  let tx = x;
-  let ty = y;
-  addEventListener("pointermove", (e) => {
-    tx = e.clientX;
-    ty = e.clientY;
-  });
-  gsap.ticker.add(() => {
-    x += (tx - x) * 0.14;
-    y += (ty - y) * 0.14;
-    const tilt = gsap.utils.clamp(-8, 8, (tx - x) * 0.05);
-    preview.style.transform = `translate(${x + 28}px, ${y - 40}px) rotate(${tilt}deg)`;
-  });
-
-  rows.forEach((row) => {
-    const card = row.querySelector(".r-card");
-    row.addEventListener("pointerenter", () => {
-      preview.innerHTML = card?.innerHTML ?? "";
-      preview.classList.add("on");
-    });
-    row.addEventListener("pointerleave", () => preview.classList.remove("on"));
   });
 }
 
@@ -163,8 +105,7 @@ function initCursor() {
   });
   document.addEventListener("pointerover", (e) => {
     const t = e.target as Element;
-    dot.classList.toggle("big", !!t.closest("a:not(.row), button, [data-cursor]"));
-    dot.classList.toggle("gone", !!t.closest(".row:not(.row-head)"));
+    dot.classList.toggle("big", !!t.closest("a, button, [data-cursor]"));
   });
   document.addEventListener("pointerleave", () => dot.classList.add("gone"));
   document.addEventListener("pointerenter", () => dot.classList.remove("gone"));
