@@ -417,7 +417,7 @@ html:not(.js) .rw-state {
 }
 
 .ix-year {
-  grid-column: span 1;
+  grid-column: 12;
   text-align: right;
 }
 
@@ -428,9 +428,9 @@ html:not(.js) .rw-state {
   vertical-align: 0.4em;
 }
 
-/* A poster for each row. It covers only the note column, and repeats the
-   note's point, so the row's other text stays readable. Hover only: touch
-   screens have no hover, and the row already says all of this. */
+/* With a mouse, each row's result lives on a poster that opens in the empty
+   column, so it covers no text. Touch screens and narrow windows have no
+   room or no hover for that, so they show the result in the row instead. */
 .ix-poster {
   display: none;
 }
@@ -439,12 +439,24 @@ html:not(.js) .rw-state {
   .ix:has(.ix-row:hover) .ix-row:not(:hover) {
     opacity: 0.3;
   }
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 861px) {
+  /* Still there for screen readers. */
+  .ix-result {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
 
   .ix-poster {
-    --pw: clamp(220px, 19vw, 300px);
+    --pw: clamp(165px, 14.25vw, 225px);
     position: absolute;
     top: 0;
-    left: calc((100% + var(--g)) / 12 * 5);
+    left: calc((100% + var(--g)) / 12 * 8);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -484,7 +496,7 @@ html:not(.js) .rw-state {
 .ix-poster-top {
   display: flex;
   justify-content: space-between;
-  font-size: 13px;
+  font-size: max(10px, calc(var(--pw) * 0.05));
   font-weight: 600;
 }
 
@@ -502,7 +514,7 @@ html:not(.js) .rw-state {
 
 .ix-poster-line {
   margin-top: 0.8em;
-  font-size: 14px;
+  font-size: max(11px, calc(var(--pw) * 0.055));
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: -0.015em;
@@ -559,12 +571,13 @@ html:not(.js) .rw-state {
   letter-spacing: -0.045em;
 }
 
-/* The photo takes as much room as a laptop screen can show whole, and the
-   text takes all the rest, so there's no dead gap between them. */
+/* The photo takes as much room as a laptop screen can show whole. The space
+   to its left and right is the same, so it sits centred beside the text. */
 .about-grid {
-  --photo: min(44%, calc((100svh - var(--g) - 104px) * 941 / 1466));
-  grid-template-columns: var(--photo) minmax(0, 1fr);
-  column-gap: clamp(40px, 6vw, 110px);
+  --photo: min(38vw, calc((100svh - var(--g) - 104px) * 941 / 1466));
+  --beside: clamp(40px, 6vw, 110px);
+  grid-template-columns: calc(var(--photo) + var(--beside) - var(--g)) minmax(0, 1fr);
+  column-gap: var(--beside);
   align-items: start;
   margin-top: clamp(72px, 9vw, 140px);
 }
@@ -572,9 +585,10 @@ html:not(.js) .rw-state {
 .photo {
   position: sticky;
   top: calc(var(--g) + 72px);
+  width: var(--photo);
   /* Same shape as the photo itself, so nothing is cropped. */
   aspect-ratio: 941 / 1466;
-  margin: 0;
+  margin: 0 0 0 calc(var(--beside) - var(--g));
   overflow: hidden;
   background: #ebebe9;
 }
@@ -1455,8 +1469,9 @@ html.js:not(.skip-intro) body {
   .photo {
     position: relative;
     top: 0;
+    width: 100%;
     max-width: 320px;
-    margin-bottom: 48px;
+    margin: 0 auto 48px;
   }
 
   .about-cols {
