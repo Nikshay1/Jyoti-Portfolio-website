@@ -328,19 +328,11 @@ main {
   color: var(--mute);
 }
 
-/* The CSS version of the ink effect only thresholds black, so the grey comes
-   from opacity instead of colour. */
-.css-ink .rw-before {
-  color: var(--ink);
-  opacity: 0.46;
-}
-
 html.js .rewrite:not(.is-static) {
   height: 260vh;
 }
 
 html.js .rewrite:not(.is-static) .rw-stick {
-  background: var(--paper);
   position: sticky;
   top: 0;
   height: 100vh;

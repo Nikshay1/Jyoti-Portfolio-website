@@ -13,12 +13,6 @@ const OFF = -8;
 // thin to pass the threshold, so the text has vanished altogether.
 const SPREAD = 0.55;
 
-// WebKit (every browser on an iPhone, and Safari on a Mac) is known for not
-// repainting animated SVG filters on HTML, so there the same look is built
-// from CSS filters. See makeCssGoo.
-const webkit = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-if (webkit) document.documentElement.classList.add("css-ink");
-
 let defs: SVGSVGElement | null = null;
 let uid = 0;
 
@@ -28,8 +22,6 @@ export type Goo = {
 };
 
 export function makeGoo(el: HTMLElement): Goo {
-  if (webkit) return makeCssGoo(el);
-
   if (!defs) {
     defs = document.createElementNS(SVG, "svg");
     defs.setAttribute("aria-hidden", "true");
@@ -69,37 +61,6 @@ export function makeGoo(el: HTMLElement): Goo {
         `1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 ${1 + (AMP - 1) * t} ${OFF * t}`,
       );
       el.style.filter = `url(#${id})`;
-    },
-  };
-}
-
-// CSS filters can't threshold alpha, only colour, so the text is blurred
-// against a white backing and contrast does the thresholding. Multiply then
-// drops the white out, leaving only the ink. The backing grows by a shadow
-// so the blur has room, without adding to the page's scrollable width.
-function makeCssGoo(el: HTMLElement): Goo {
-  const max = () => parseFloat(getComputedStyle(el).fontSize) * SPREAD;
-  let last = -1;
-
-  return {
-    set(k) {
-      if (k === last) return;
-      last = k;
-      if (k <= 0) {
-        el.style.filter = "";
-        el.style.background = "";
-        el.style.boxShadow = "";
-        el.style.mixBlendMode = "";
-        return;
-      }
-      const t = Math.min(1, k / 0.3);
-      // Contrast pivots on 50% grey. Darkening first moves the cut-off to 40%
-      // ink, the same as the SVG filter's.
-      const shift = 1 - 0.17 * t;
-      el.style.background = "#fff";
-      el.style.boxShadow = "0 0 0 1.2em #fff";
-      el.style.mixBlendMode = "multiply";
-      el.style.filter = `blur(${k * max()}px) brightness(${shift}) contrast(${1 + (AMP - 1) * t})`;
     },
   };
 }

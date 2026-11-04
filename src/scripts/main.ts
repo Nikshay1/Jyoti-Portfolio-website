@@ -63,14 +63,17 @@ function playHero() {
 }
 
 // Small text would turn to mush in the ink effect, so it just comes into focus.
+// On iPhones an animated CSS blur leaves stray magenta lines at the element's
+// edges, so WebKit gets a plain rise and fade instead.
 function initFades() {
+  const webkit = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  const start = webkit ? { opacity: 0, y: 14 } : { opacity: 0, filter: "blur(10px)" };
   gsap.utils.toArray<HTMLElement>("[data-fade]").forEach((el) => {
     gsap.from(el, {
-      opacity: 0,
-      filter: "blur(10px)",
+      ...start,
       duration: 1.2,
       ease: "power2.out",
-      clearProps: "opacity,filter",
+      clearProps: "opacity,filter,transform",
       scrollTrigger: { trigger: el, start: "top 92%" },
     });
   });
